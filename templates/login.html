@@ -1,0 +1,57 @@
+  <!DOCTYPE html>
+  <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='authpage/styles.css') }}">
+  </head>
+  <body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <script>
+        alert("{{ messages[0] }}");
+      </script>
+    {% endif %}
+  {% endwith %}
+
+  <div class="container">
+    <div class="auth">
+    {% if context.have_users %}
+      <div class="auth-title"><h1>Página de Login</h1></div>
+        <div class="auth-form">
+          <form method="POST">
+            <div class="login">
+              <label for="login">Email:</label>
+              <input type="text" name="login" id="Login" placeholder="Informe seu Email">
+            </div>
+            <div class="login-password">
+              <label for="login-password">Senha:</label>
+              <input type="password" name="login-password" id="login-password" placeholder="Informe sua senha">
+            </div>
+            <button type="submit">Entrar</button>
+          </form>
+        </div>
+      {% else %}
+        <div class="auth-title"><h1>Página de Cadastro</h1></div>
+        <div class="auth-form">
+          <form method="POST">
+            <div class="signup-login">
+              <label for="signup-login">Email</label>
+              <input type="text" name="signup-login" id="signup-login" placeholder="Informe seu email">
+            </div>
+            <div class="signup-password">
+              <label for="signup-password">Senha:</label>
+              <input type="password" name="signup-password" id="signup-password" placeholder="Informe sua senha">
+            </div>
+            <button type="submit">Cadastrar</button>
+          </form>
+        </div>
+      {% endif %}
+      {% if context.error %}
+        <p style="color:black;">{{ context.error }}</p>
+      {% endif %}
+    </div>
+  </div>
+  </body>
+  </html>
