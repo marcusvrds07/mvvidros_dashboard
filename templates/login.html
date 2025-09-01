@@ -3,8 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='authpage/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <title>Login</title>
   </head>
   <body>
     {% with messages = get_flashed_messages() %}
@@ -18,7 +22,7 @@
   <div class="container">
     <div class="auth">
     {% if context.have_users %}
-      <div class="auth-title"><h1>Página de Login</h1></div>
+      <div class="auth-title"><h1>Acesse sua conta</h1></div>
         <div class="auth-form">
           <form method="POST">
             <div class="login">
@@ -29,11 +33,15 @@
               <label for="login-password">Senha:</label>
               <input type="password" name="login-password" id="login-password" placeholder="Informe sua senha">
             </div>
+            {% if context.error %}
+              <p style="color:red; font-size:13px">{{ context.error }}</p>
+            {% endif %}
             <button type="submit">Entrar</button>
           </form>
         </div>
+        <div class="forgot-password"><a href="{{url_for('recovery_password')}}">Esqueceu a senha?</a></div>
       {% else %}
-        <div class="auth-title"><h1>Página de Cadastro</h1></div>
+        <div class="auth-title"><h1>Cadastre sua conta</h1></div>
         <div class="auth-form">
           <form method="POST">
             <div class="signup-login">
@@ -44,13 +52,14 @@
               <label for="signup-password">Senha:</label>
               <input type="password" name="signup-password" id="signup-password" placeholder="Informe sua senha">
             </div>
+            {% if context.error %}
+              <p style="color:red; font-size:13px">{{ context.error }}</p>
+            {% endif %}
             <button type="submit">Cadastrar</button>
           </form>
         </div>
       {% endif %}
-      {% if context.error %}
-        <p style="color:black;">{{ context.error }}</p>
-      {% endif %}
+      <a href="{{url_for('login')}}"><img src="{{ url_for('static', filename='images/mvlogo.png') }}" alt="Logo"></a>
     </div>
   </div>
   </body>

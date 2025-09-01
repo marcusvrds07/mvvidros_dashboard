@@ -1,0 +1,114 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("../images/loja.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: "Exo 2", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100dvh;
+}
+
+.verify-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.verify-card h2 {
+  color: #1448a1;
+  margin-bottom: 10px;
+}
+
+.verify-card p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+.verify-card p#error {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.code-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.code-inputs input {
+  width: 45px;
+  height: 55px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  border: 2px solid #3498db;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.code-inputs input:focus {
+  border-color: #1951B2;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #1951B2;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.verify-card img {
+    display: block;
+    width: 50px;
+    margin: 20px auto 0 auto;
+    cursor: pointer;
+}
+
+.back-to-home {
+    width: 100%;
+    margin: 15px auto 0;
+    text-align: left;
+}
+.back-to-home a {
+    text-decoration: none;
+    color: #1448a1;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+@media (max-width: 430px) {
+    .verify-card {
+        width: 90%;
+        margin: 0 auto;
+    }
+}

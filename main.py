@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modules.manager_database import create_sqlite_tables, connect_to_db
-from modules.auth import user_register, user_login
+from modules.auth import user_register, user_login, reset_password
+import os, bcrypt
 
 create_sqlite_tables()
 app = Flask(__name__)
 app.config['SESSION_PERMANENT'] = False
-app.secret_key = "segredo123"
+app.secret_key = os.getenv("SECRET_KEY")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -25,9 +26,9 @@ def login():
                 return render_template("login.html", context=context)
         else:
             if "signup-login" in request.form and "signup-password" in request.form:
-                return user_register(context)
+                user_register()
             else:
-                context['error'] = "Caiu no else do main"
+                context['error'] = "Erro na hora de validar"
                 return render_template("login.html", context=context)
             
     if "user" not in session:
@@ -35,9 +36,34 @@ def login():
     else:
         return redirect(url_for("dashboard"))
 
+@app.route("/recovery_password", methods=["GET", "POST"])
+def recovery_password():
+    return reset_password()
+
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
+
+@app.route("/verify_code", methods=['GET','POST'])
+def verify_code():
+    context= {}
+    if request.method == 'POST':
+        code = "".join([request.form.get(f"n{i}") for i in range(1, 7)]).encode()
+
+        stored_hash = session.get("recovery_code")
+
+        if stored_hash and bcrypt.checkpw(code, stored_hash.encode("utf-8")):
+            context["error"] = "Código válido"
+        else:
+            context["error"] = "Código inválido"
+
+        return render_template("recovery_password(code).html", context=context)
+    return render_template("recovery_password(code).html", context=context)
+
 @app.route("/dashboard")
 def dashboard():
-    if "user" in session:   # verifica se usuário está logado
+    if "user" in session:
         return render_template("dashboard.html")
     else:
         return redirect(url_for("login"))

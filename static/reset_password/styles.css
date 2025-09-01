@@ -19,7 +19,7 @@ body {
     align-items: center;
 }
 
-.auth {
+.reset_password {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -34,34 +34,43 @@ body {
     animation: slideDown 1.4s ease forwards;
 }
 
-.auth img {
+.reset_password img {
     display: block;
     width: 50px;
     margin: 15px auto 0 auto;
     cursor: pointer;
 }
 
-.auth-title {
-    width: 100%;
+.reset-title {
     text-align: center;
     color: #1448a1;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
-.auth-form {
-    display: flex;
+.reset_password p {
+    text-align: justify;
+    width: 90%;
+    margin: 0 auto 20px auto;
+    font-size: 14px;
+    color: #333;
+}
+
+.reset-form {
     width: 100%;
+    display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-.auth-form form {
+.reset-form form {
     display: flex;
     flex-direction: column;
     width: 90%;
     gap: 10px;
 }
 
-.auth-form input {
+.reset-form input {
     width: 100%;
     height: 40px;
     border: none;
@@ -71,11 +80,11 @@ body {
     box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
 }
 
-.auth-form input:focus {
+.reset-form input:focus {
     outline-color: #1448a1;
 }
 
-.auth-form button {
+.reset-form button {
     border: none;
     width: 100%;
     padding: 10px 30px;
@@ -87,21 +96,7 @@ body {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
 }
 
-.forgot-password {
-    width: 90%;
-    margin-top: 10px;
-    text-align: left;
-}
-
-.forgot-password a {
-    text-decoration: none;
-    color: #1448a1;
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: underline;
-}
-
-.signup-password, .signup-login, .login-password, .login {
+.reset_email {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -110,14 +105,27 @@ body {
     font-size: 14px;
 }
 
-.signup-password label, .signup-login label, .login-password label, .login label {
+.reset_email label {
     text-transform: uppercase;
     font-size: 12px;
     margin-bottom: 2px;
 }
 
+.remember-password {
+    width: 90%;
+    margin: 15px auto 0;
+    text-align: left;
+}
+.remember-password a {
+    text-decoration: none;
+    color: #1448a1;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
 @media (max-width: 430px) {
-    .auth {
+    .reset_password {
         width: 90%;
     }
 }
