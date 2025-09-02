@@ -12,6 +12,17 @@ def create_sqlite_tables():
         login TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL
     );
+    ''',
+        '''
+        CREATE TABLE IF NOT EXISTS passwords_resets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_login INTEGER NOT NULL,
+            code_hash TEXT NOT NULL,
+            expired_at DATETIME NOT NULL,
+            used BOOLEAN DEFAULT 0,
+
+            FOREIGN KEY (id_login) REFERENCES users_login (id)
+        )
     '''
     ]
 

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modules.manager_database import create_sqlite_tables, connect_to_db
 from modules.auth import user_register, user_login, reset_password
-import os, bcrypt
+import os, bcrypt, datetime
 
 create_sqlite_tables()
 app = Flask(__name__)
@@ -47,19 +47,35 @@ def home():
 
 @app.route("/verify_code", methods=['GET','POST'])
 def verify_code():
-    context= {}
+    context= {
+        'valid_code': session.pop('valid_code', None)
+    }
     if request.method == 'POST':
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        connection, cursor = connect_to_db()
         code = "".join([request.form.get(f"n{i}") for i in range(1, 7)]).encode()
 
-        stored_hash = session.get("recovery_code")
+        cursor.execute('SELECT code_hash, id, id_login FROM passwords_resets WHERE id = ? AND expired_at > ? AND used = 0', (session.get('id_password_reset'), now))
+        stored_hash = cursor.fetchone()
 
-        if stored_hash and bcrypt.checkpw(code, stored_hash.encode("utf-8")):
-            context["error"] = "Código válido"
+        if stored_hash:
+            stored_hash, id, id_login = stored_hash
+            if stored_hash and bcrypt.checkpw(code, stored_hash.encode("utf-8")):
+                cursor.execute('UPDATE passwords_resets SET used = 1 WHERE id = ? ', (id,))
+                connection.commit()
+
+                session.pop('id_password_reset')
+                context["error"] = "Código válido"
+            else:
+                context["error"] = "Código inválido"
         else:
-            context["error"] = "Código inválido"
+            return redirect(url_for('recovery_password'))
 
         return render_template("recovery_password(code).html", context=context)
-    return render_template("recovery_password(code).html", context=context)
+    if "id_password_reset" in session:
+        return render_template("recovery_password(code).html", context=context)
+    else:
+        return redirect(url_for('recovery_password'))
 
 @app.route("/dashboard")
 def dashboard():

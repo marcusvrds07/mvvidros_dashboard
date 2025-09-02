@@ -24,6 +24,9 @@ body {
   text-align: center;
   max-width: 400px;
   width: 100%;
+  opacity: 0;
+  transform: translateY(-50px);
+  animation: slideDown 1.4s ease forwards;
 }
 
 .verify-card h2 {
@@ -104,6 +107,13 @@ input[type=number]::-webkit-outer-spin-button {
 }
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 430px) {
