@@ -10,7 +10,8 @@ def create_sqlite_tables():
         CREATE TABLE IF NOT EXISTS users_login (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         login TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        session_token TEXT
     );
     ''',
         '''

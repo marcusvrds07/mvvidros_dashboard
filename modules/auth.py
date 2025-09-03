@@ -9,7 +9,6 @@ def user_register():
     connection, cursor = connect_to_db()
     signup_login = request.form.get("signup-login", "").strip()
     signup_password = bcrypt.hashpw(request.form.get("signup-password", "").strip().encode(), bcrypt.gensalt())
-    # realizar validação da senha e do email via backend
     try:
         cursor.execute('INSERT INTO users_login (login, password) VALUES (?, ?)', (signup_login, signup_password,))
         
@@ -17,9 +16,10 @@ def user_register():
         finish_connection(connection, cursor)
 
         flash("Conta criada com sucesso!")
+
         # logica após registo da senha:
 
-        # return redirect(url_for("login"))
+        return redirect(url_for("login"))
     except:
         flash("Não foi possivel criar sua conta!")
 
@@ -37,7 +37,11 @@ def user_login(context):
             hashed_password = hashed_password.encode("utf-8")
 
         if bcrypt.checkpw(login_password, hashed_password):
-            session["user"] = login
+            session["session_token"] = str(uuid.uuid4())
+            session['user_login'] = login
+            cursor.execute('UPDATE users_login SET session_token = ? WHERE login = ?', (session.get('session_token', ''), login,))
+            connection.commit()
+
             finish_connection(connection, cursor)
             return redirect(url_for("dashboard"))
 
@@ -46,7 +50,9 @@ def user_login(context):
     return render_template("login.html", context=context)
 
 def send_code():
-    context = {}
+    context = {
+        'title': 'Recuperação de Senha'
+    }
     connection, cursor = connect_to_db()
     if request.method == "POST":
         now = datetime.datetime.now()
@@ -70,7 +76,7 @@ def send_code():
                 msg = MIMEMultipart("alternative")
                 msg["From"] = EMAIL
                 msg["To"] = email_recovery
-                msg["Subject"] = "Teste de Email HTML"
+                msg["Subject"] = "Redefinir de Senha"
                 html = f"""
                 <html>
                 <body style="font-family: Arial, sans-serif; text-align: center; background: #f4f6f8; padding: 20px;">
@@ -99,8 +105,6 @@ def send_code():
                         server.login(EMAIL, SENHA)
                         server.sendmail(EMAIL, msg["To"], msg.as_string())
 
-                    print("Email HTML enviado com sucesso!")
-
                     recovery_code = bcrypt.hashpw(recovery_code.encode(), bcrypt.gensalt()).decode()
 
                     cursor.execute('INSERT INTO passwords_resets (id_login, code_hash, expired_at, used) VALUES (?, ?, ?, ?)', (id_login,recovery_code, (now + datetime.timedelta(minutes=10)).strftime("%Y-%m-%d %H:%M:%S"), False))
@@ -123,7 +127,9 @@ def send_code():
     return render_template('recovery_password.html', context=context)
 
 def reset_password():
-    context = {}
+    context = {
+        'title': 'Redefinir Senha'
+    }
     connection, cursor = connect_to_db()
 
     if request.method == 'POST':
@@ -137,6 +143,10 @@ def reset_password():
                 connection.commit()
                 finish_connection(connection, cursor)
                 return redirect(url_for('login'))
+            else:
+                context['error'] = 'Senha inválida'
+        else:
+            context['error'] = 'As senhas não são iguais'
     return render_template('reset_password.html', context=context)
 
 
