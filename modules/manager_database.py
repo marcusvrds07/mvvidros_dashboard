@@ -1,7 +1,7 @@
 import sqlite3, os
 from pathlib import Path
 
-# Criação das Tabelas do Banco de dados (SQLITE3 ou MYSQL)
+# Criação das Tabelas do Banco de dados (SQLITE3)
 def create_sqlite_tables():
 
     connection, cursor = connect_to_db()
