@@ -3,6 +3,7 @@ from modules.manager_database import connect_to_db, finish_connection
 from flask import request, redirect, url_for, session, flash, render_template
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from password_validator import PasswordValidator
 
 def user_register():
     connection, cursor = connect_to_db()
@@ -44,7 +45,7 @@ def user_login(context):
     context['error'] = 'Usuário ou Senha inválido'
     return render_template("login.html", context=context)
 
-def reset_password():
+def send_code():
     context = {}
     connection, cursor = connect_to_db()
     if request.method == "POST":
@@ -119,4 +120,37 @@ def reset_password():
             return redirect(url_for('verify_code'))
             
     finish_connection(connection, cursor)
+    return render_template('recovery_password.html', context=context)
+
+def reset_password():
+    context = {}
+    connection, cursor = connect_to_db()
+
+    if request.method == 'POST':
+        password = request.form.get('password', '').strip()
+        confirm_password = request.form.get('password-confirm', '').strip()
+
+        if password == confirm_password:
+            if password_validador(password):
+                password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+                cursor.execute('UPDATE users_login SET password = ? WHERE id = ?', (password, session.pop('confirmed_user_id')))
+                connection.commit()
+                finish_connection(connection, cursor)
+                return redirect(url_for('login'))
     return render_template('reset_password.html', context=context)
+
+
+def password_validador(password):
+    password_policy = PasswordValidator()
+
+    # regras para a senha
+    password_policy\
+    .min(8)\
+    .max(20)\
+    .has().uppercase()\
+    .has().lowercase()\
+    .has().digits()\
+    .has().symbols()\
+    .has().no().spaces()\
+
+    return password_policy.validate(password)

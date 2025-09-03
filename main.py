@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modules.manager_database import create_sqlite_tables, connect_to_db
-from modules.auth import user_register, user_login, reset_password
+from modules.auth import user_register, user_login, send_code, reset_password
 import os, bcrypt, datetime
 
 create_sqlite_tables()
@@ -38,7 +38,7 @@ def login():
 
 @app.route("/recovery_password", methods=["GET", "POST"])
 def recovery_password():
-    return reset_password()
+    return send_code()
 
 @app.route('/')
 def home():
@@ -64,18 +64,28 @@ def verify_code():
                 cursor.execute('UPDATE passwords_resets SET used = 1 WHERE id = ? ', (id,))
                 connection.commit()
 
+                session['confirmed_user_id'] = id_login
+
                 session.pop('id_password_reset')
-                context["error"] = "Código válido"
+                return redirect(url_for('reset_password_page'))
             else:
                 context["error"] = "Código inválido"
         else:
             return redirect(url_for('recovery_password'))
 
-        return render_template("recovery_password(code).html", context=context)
+        return render_template("verify_code.html", context=context)
     if "id_password_reset" in session:
-        return render_template("recovery_password(code).html", context=context)
+        return render_template("verify_code.html", context=context)
     else:
         return redirect(url_for('recovery_password'))
+
+
+@app.route("/reset_password", methods=['GET', 'POST'])
+def reset_password_page():
+    if 'confirmed_user_id' in session:
+        return reset_password()
+    else:
+        return redirect(url_for('login'))
 
 @app.route("/dashboard")
 def dashboard():
