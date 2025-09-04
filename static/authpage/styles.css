@@ -5,7 +5,7 @@
 }
 
 body {
-    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("../images/loja.jpg");
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/loja.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -101,7 +101,10 @@ body {
     text-decoration: underline;
 }
 
-.signup-password, .signup-login, .login-password, .login {
+.signup-password,
+.signup-login,
+.login-password,
+.login {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -110,10 +113,38 @@ body {
     font-size: 14px;
 }
 
-.signup-password label, .signup-login label, .login-password label, .login label {
+.signup-password label,
+.signup-login label,
+.login-password label,
+.login label {
     text-transform: uppercase;
     font-size: 12px;
     margin-bottom: 2px;
+}
+
+#error-message {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 1.5s ease, max-height 1.5s ease;
+    color: red;
+    font-size: 13px;
+}
+
+#error-message.show {
+    opacity: 1;
+    max-height: 100px;
+}
+
+.several-error-message {
+    max-height: 0;
+    color: red;
+    font-size: 13px;
+    transition: max-height 1.5s ease;
+}
+
+.several-error-message.show {
+    max-height: 300px;  
 }
 
 @media (max-width: 430px) {
@@ -123,8 +154,8 @@ body {
 }
 
 @keyframes slideDown {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -1,7 +1,7 @@
 let progressBarInterval = null;
 let isAlertVisible = false;
 let larguraAtual = 340;
-let totalDuration = 10000; // 10s
+let totalDuration = 10000;
 let intervalTime = 100;
 let startTime = 0;
 
@@ -13,7 +13,7 @@ function showAlert(message, type) {
     if (isAlertVisible) return;
 
     isAlertVisible = true;
-    startTime = Date.now(); // marca o início
+    startTime = Date.now();
     const alertDiv = document.getElementById(type + 'Alert');
     const errorMessage = document.getElementById(type === 'error' ? 'errorMessage' : 'successMessage');
     
@@ -25,7 +25,7 @@ function showAlert(message, type) {
     larguraAtual = calcularLargura();
 
     function atualizarBarra() {
-        const elapsed = Date.now() - startTime; // tempo real decorrido
+        const elapsed = Date.now() - startTime;
         const progresso = Math.max(0, (totalDuration - elapsed) / totalDuration);
         progressBar.style.width = (larguraAtual * progresso) + "px";
 
@@ -40,7 +40,7 @@ function showAlert(message, type) {
 
     window.addEventListener("resize", () => {
         larguraAtual = calcularLargura();
-        atualizarBarra(); // recalcula proporcionalmente
+        atualizarBarra();
     });
 }
 

@@ -10,7 +10,7 @@
                         </div>
                     </div>
                     <script>
-                        showAlert("{{ msg }}", "{{ category }}");
+                        setTimeout(() => showAlert("{{ msg }}", "{{ category }}"), 1000);
                     </script>
                 {% endfor %}
             {% endif %}

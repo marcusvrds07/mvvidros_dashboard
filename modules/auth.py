@@ -3,7 +3,7 @@ from modules.manager_database import connect_to_db, finish_connection
 from flask import request, redirect, url_for, session, flash, render_template
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from modules.utils.validations import password_validator
+from modules.utils.validations import password_validator, email_validator
 
 
 # ===============================
@@ -12,27 +12,39 @@ from modules.utils.validations import password_validator
 def user_register():
     connection, cursor = connect_to_db()
     signup_login = request.form.get("signup-login", "").strip()
-    signup_password = bcrypt.hashpw(
-        request.form.get("signup-password", "").strip().encode(),
-        bcrypt.gensalt()
-    )
+    signup_password = request.form.get("signup-password", "").strip()
 
-    try:
-        # Inserção do novo usuário no banco de dados
-        cursor.execute(
-            'INSERT INTO users_login (login, password) VALUES (?, ?)',
-            (signup_login, signup_password,)
-        )
-        connection.commit()
-        finish_connection(connection, cursor)
+    if email_validator(signup_login):
+        if password_validator(signup_password):
+            signup_password = bcrypt.hashpw(signup_password.encode(), bcrypt.gensalt())
 
-        flash("Conta criada com sucesso!", "success")
-        # Redireciona para login após criação
-        return redirect(url_for("login"))
+            try:
+                # Inserção do novo usuário no banco de dados
+                cursor.execute(
+                    'INSERT INTO users_login (login, password) VALUES (?, ?)',
+                    (signup_login, signup_password,)
+                )
+                connection.commit()
+                finish_connection(connection, cursor)
 
-    except:
-        # erro ao criar conta
-        flash("Não foi possivel criar sua conta!")
+                flash("Conta criada com sucesso!", "success")
+                # Redireciona para login após criação
+                return redirect(url_for("login"))
+
+            except:
+                # erro ao criar conta
+                flash("Não foi possivel criar sua conta!")
+        else:
+            context = {
+                'error': 'Senha Inválida'
+            }
+            return render_template("login.html", context=context)
+    else:
+        context = {
+                'error': 'Email Inválida'
+            }
+        return render_template("login.html", context=context)
+
 
 
 # ===============================

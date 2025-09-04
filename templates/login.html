@@ -17,7 +17,7 @@
     {% if context.have_users %}
       <div class="auth-title"><h1>Acesse sua conta</h1></div>
         <div class="auth-form">
-          <form method="POST">
+          <form method="POST" onsubmit='authValidation(event)'>
             <div class="login">
               <label for="login">Email:</label>
               <input type="text" name="login" id="Login" placeholder="Informe seu Email">
@@ -26,9 +26,7 @@
               <label for="login-password">Senha:</label>
               <input type="password" name="login-password" id="login-password" placeholder="Informe sua senha">
             </div>
-            {% if context.error %}
-              <p style="color:red; font-size:13px">{{ context.error }}</p>
-            {% endif %}
+            <div class="error-messages"></div>
             <button type="submit">Entrar</button>
           </form>
         </div>
@@ -36,7 +34,7 @@
       {% else %}
         <div class="auth-title"><h1>Cadastre sua conta</h1></div>
         <div class="auth-form">
-          <form method="POST">
+          <form method="POST" onsubmit='authValidation(event)'>
             <div class="signup-login">
               <label for="signup-login">Email</label>
               <input type="text" name="signup-login" id="signup-login" placeholder="Informe seu email">
@@ -45,9 +43,7 @@
               <label for="signup-password">Senha:</label>
               <input type="password" name="signup-password" id="signup-password" placeholder="Informe sua senha">
             </div>
-            {% if context.error %}
-              <p style="color:red; font-size:13px">{{ context.error }}</p>
-            {% endif %}
+            <div class="error-messages"></div>
             <button type="submit">Cadastrar</button>
           </form>
         </div>
@@ -56,17 +52,17 @@
     </div>
   </div>
 
+  {% if context.error %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            showErrorMessage("{{context.error}}");
+        });
+    </script>
+  {% endif %}
+
   {% include "partials/alert.html" %}
 
-  <script>
-    setTimeout(() => {
-      const popup = document.getElementById("popup");
-      if (popup) {
-        popup.style.opacity = "0";
-        setTimeout(() => popup.remove(), 500);
-      }
-    }, 3000);
-  </script>
+  <script src="{{ url_for('static', filename='authpage/scripts.js') }}"></script>
 
   </body>
   </html>

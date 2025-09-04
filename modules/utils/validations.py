@@ -1,4 +1,13 @@
 from password_validator import PasswordValidator
+from email_validator import validate_email, EmailNotValidError
+
+def email_validator(email):
+    try:
+        validate_email(email)
+        return True
+    except EmailNotValidError:
+        return False
+
 
 def password_validator(password):
     password_policy = PasswordValidator()
