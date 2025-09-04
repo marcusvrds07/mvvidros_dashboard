@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='authpage/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='partials/alert/styles.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -11,14 +12,6 @@
     <title>MV Vidros - {{context.title}}</title>
   </head>
   <body>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <script>
-        alert("{{ messages[0] }}");
-      </script>
-    {% endif %}
-  {% endwith %}
-
   <div class="container">
     <div class="auth">
     {% if context.have_users %}
@@ -62,5 +55,18 @@
       <a href="{{url_for('login')}}"><img src="{{ url_for('static', filename='images/mvlogo.png') }}" alt="Logo"></a>
     </div>
   </div>
+
+  {% include "partials/alert.html" %}
+
+  <script>
+    setTimeout(() => {
+      const popup = document.getElementById("popup");
+      if (popup) {
+        popup.style.opacity = "0";
+        setTimeout(() => popup.remove(), 500);
+      }
+    }, 3000);
+  </script>
+
   </body>
   </html>

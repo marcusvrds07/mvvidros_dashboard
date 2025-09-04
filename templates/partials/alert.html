@@ -1,0 +1,17 @@
+    <script src="{{ url_for('static', filename='partials/alert/scripts.js') }}"></script>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div id="{{category}}Alert" class="alert {{category}}-alert">
+                        <span class="closebtn" onclick="closeAlert('{{category}}Alert')">&times;</span>
+                        <span id="{{category}}Message">{{ message }}</span>
+                        <div class="progress-container">
+                            <div id="{{category}}ProgressBar" class="progress-bar"></div>
+                        </div>
+                    </div>
+                    <script>
+                        showAlert("{{ msg }}", "{{ category }}");
+                    </script>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}

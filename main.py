@@ -40,11 +40,10 @@ def login():
         else:
             # Fluxo de cadastro inicial (primeiro usuário do sistema)
             if "signup-login" in request.form and "signup-password" in request.form:
-                user_register()
+                return user_register()
             else:
                 context['error'] = "Erro na hora de validar"
                 return render_template("login.html", context=context)
-            
     return render_template("login.html", context=context)
 
 

@@ -26,7 +26,7 @@ def user_register():
         connection.commit()
         finish_connection(connection, cursor)
 
-        flash("Conta criada com sucesso!")
+        flash("Conta criada com sucesso!", "success")
         # Redireciona para login após criação
         return redirect(url_for("login"))
 
@@ -65,6 +65,7 @@ def user_login(context):
             connection.commit()
 
             finish_connection(connection, cursor)
+            flash("Sua conta foi criada com sucesso!", "success")
             return redirect(url_for("dashboard"))
 
     # Se falhar login, encerra conexão e retorna erro
