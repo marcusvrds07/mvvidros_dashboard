@@ -4,6 +4,7 @@ function authValidation(event) {
 
     const emailInput = form.querySelector('input[type="text"]');
     const passwordInput = form.querySelector('input[type="password"]');
+    const passwordConfirmInput = form.querySelector('#password-confirm');
 
     if (!window.messages) {
         window.messages = [];
@@ -25,8 +26,8 @@ function authValidation(event) {
     }
 
     // --- valida senha se for cadastro ---
-    if (emailInput && emailInput.getAttribute("name") === "signup-login") {
-        if (passwordInput) {
+    if (emailInput && emailInput.getAttribute("name") === "signup-login" || passwordConfirmInput) {
+        if (passwordInput || passwordConfirmInput) {
             const password = passwordInput.value.trim();
             const msgPass = "A senha precisa ter 8 a 20 caracteres";
             const hasDigits = "A senha precisa contar números"
@@ -34,6 +35,7 @@ function authValidation(event) {
             const uppercaseLetter = 'A senha precisa ter uma letra maiúscula'
             const lowercaseLetter = 'A senha precisa ter uma letra minúscula'
             const noSpace = 'A senha não pode conter espaço'
+            const notSame = 'As senhas não são iguais'
 
             updateMessage(
                 msgPass,
@@ -73,6 +75,17 @@ function authValidation(event) {
                     ? "Error"
                     : "Success"
             );
+
+            if (passwordConfirmInput) {
+                const passwordConfirm = passwordConfirmInput.value;
+                updateMessage(
+                    notSame, 
+                    (password === passwordConfirm && passwordConfirm.length > 0)
+                        ? "Success"
+                        : "Error"
+                );
+            }
+
         }
 
     }
@@ -98,18 +111,21 @@ function updateMessage(text, status) {
 
 // --- validação em tempo real para senha ---
 document.addEventListener("DOMContentLoaded", () => {
-    const passwordInput = document.querySelector('#signup-password');
+    const passwordInput = document.querySelector('input[type="password"]');
+    const passwordConfirmInput = document.querySelector('#password-confirm');
     const msgPass = "A senha precisa ter 8 a 20 caracteres";
     const hasDigits = "A senha precisa contar números"
     const specialCharacterMessage = "A senha precisa ter caracter especial";
     const uppercaseLetter = 'A senha precisa ter uma letra maiúscula'
     const lowercaseLetter = 'A senha precisa ter uma letra minúscula'
     const noSpace = 'A senha não pode conter espaço'
+    const notSame = 'As senhas não são iguais'
 
-
+ 
     if (passwordInput) {
         passwordInput.addEventListener("input", function () {
             const password = passwordInput.value;
+
             updateMessage(
                 msgPass,
                 (password.length >= 8 && password.length <= 20)
@@ -147,6 +163,32 @@ document.addEventListener("DOMContentLoaded", () => {
                     ? "Error"
                     : "Success"
             );
+            
+            if (passwordConfirmInput) {
+                const passwordConfirm = passwordConfirmInput.value;
+                updateMessage(
+                    notSame, 
+                    (password === passwordConfirm && passwordConfirm.length > 0)
+                        ? "Success"
+                        : "Error"
+                );
+            }
+
+
+            showErrorMessage(window.messages);
+        });
+    }
+
+    if (passwordConfirmInput) {
+        passwordConfirmInput.addEventListener("input", function () {
+                const password = passwordInput.value;
+                const passwordConfirm = passwordConfirmInput.value;
+                updateMessage(
+                    notSame, 
+                    (password === passwordConfirm && passwordConfirm.length > 0)
+                        ? "Success"
+                        : "Error"
+                )
 
             showErrorMessage(window.messages);
         });

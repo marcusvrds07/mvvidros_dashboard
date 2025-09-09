@@ -107,74 +107,81 @@ def send_code():
         reset_email = request.form.get("reset_email", "").strip()
 
         # Consulta usuário e códigos ativos
-        cursor.execute('''SELECT ul.id, ul.login, pr.id
+        cursor.execute('''SELECT ul.id, ul.login, pr.id, pr.id_login
                           FROM users_login as ul 
                           LEFT JOIN passwords_resets as pr 
                           ON pr.id_login = ul.id AND pr.used = 0 AND expired_at > ?
                           WHERE login = ?''',
                           (now.strftime("%Y-%m-%d %H:%M:%S"), reset_email))
 
-        result_query = cursor.fetchone() or (None, None, None)
-        id_login, email_recovery, id_password_reset = result_query
+        result_query = cursor.fetchone() or (None, None, None, None)
+        id_login, email_recovery, id_password_reset, pr_id_login = result_query
 
-        # Se não existe código válido
-        if id_password_reset is None:
-            if (email_recovery and EMAIL and SENHA) is not None:
-                msg = MIMEMultipart("alternative")
-                msg["From"] = EMAIL
-                msg["To"] = email_recovery
-                msg["Subject"] = "Redefinição de Senha"
+        # Se não exister usuario ja verificado e for o mesmo do input
+        if not session.get('confirmed_user_id', '') == id_login:
+            # Se não existe código válido
+            if id_password_reset is None:
+                #verifica se o email e a senha da env e o email de recuperação são vazios
+                if email_recovery and EMAIL and SENHA:
+                    msg = MIMEMultipart("alternative")
+                    msg["From"] = EMAIL
+                    msg["To"] = email_recovery
+                    msg["Subject"] = "Redefinição de Senha"
 
-                html = f"""
-                <html>
-                <body style="font-family: Arial, sans-serif; text-align: center; background: #f4f6f8; padding: 20px;">
-                    <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                        <h2 style="color: #2c3e50;">Olá, Marcus!</h2>
-                        <p style="font-size: 16px; color: #555;">Você solicitou a recuperação de senha.</p>
-                        <p style="font-size: 16px; color: #555;">Digite o código abaixo para continuar:</p>
-                        <div style="margin: 25px 0; text-align: center;">
-                            {''.join([f'<span style="display:inline-block; width:45px; height:55px; line-height:55px; margin:5px; border:2px solid #3498db; border-radius:6px; font-size:22px; font-weight:bold; color:#2c3e50; text-align:center;">{digit}</span>' for digit in recovery_code])}
+                    html = f"""
+                    <html>
+                    <body style="font-family: Arial, sans-serif; text-align: center; background: #f4f6f8; padding: 20px;">
+                        <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                            <h2 style="color: #2c3e50;">Olá, {email_recovery}!</h2>
+                            <p style="font-size: 16px; color: #555;">Você solicitou a recuperação de senha.</p>
+                            <p style="font-size: 16px; color: #555;">Digite o código abaixo para continuar:</p>
+                            <div style="margin: 25px 0; text-align: center;">
+                                {''.join([f'<span style="display:inline-block; width:45px; height:55px; line-height:55px; margin:5px; border:2px solid #3498db; border-radius:6px; font-size:22px; font-weight:bold; color:#2c3e50; text-align:center;">{digit}</span>' for digit in recovery_code])}
+                            </div>
+                            <p style="font-size: 14px; color: #777;">Se você não fez essa solicitação, ignore este email.</p>
                         </div>
-                        <p style="font-size: 14px; color: #777;">Se você não fez essa solicitação, ignore este email.</p>
-                    </div>
-                </body>
-                </html>
-                """
-                msg.attach(MIMEText(html, "html"))
+                    </body>
+                    </html>
+                    """
+                    msg.attach(MIMEText(html, "html"))
 
-                try:
-                    # Envio do email ao usuário
-                    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-                        server.starttls()
-                        server.login(EMAIL, SENHA)
-                        server.sendmail(EMAIL, msg["To"], msg.as_string())
+                    try:
+                        # Envio do email ao usuário
+                        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+                            server.starttls()
+                            server.login(EMAIL, SENHA)
+                            server.sendmail(EMAIL, msg["To"], msg.as_string())
 
-                    # Salva hash do código no banco
-                    recovery_code = bcrypt.hashpw(recovery_code.encode(),bcrypt.gensalt()).decode()
+                        # Salva hash do código no banco
+                        recovery_code = bcrypt.hashpw(recovery_code.encode(),bcrypt.gensalt()).decode()
 
-                    cursor.execute(
-                        'INSERT INTO passwords_resets (id_login, code_hash, expired_at, used) VALUES (?, ?, ?, ?)',
-                        (id_login, recovery_code,
-                         (now + datetime.timedelta(minutes=10)).strftime("%Y-%m-%d %H:%M:%S"),
-                         False)
-                    )
-                    id_password_reset = cursor.lastrowid
+                        cursor.execute(
+                            'INSERT INTO passwords_resets (id_login, code_hash, expired_at, used) VALUES (?, ?, ?, ?)',
+                            (id_login, recovery_code,
+                            (now + datetime.timedelta(minutes=10)).strftime("%Y-%m-%d %H:%M:%S"),
+                            False)
+                        )
+                        id_password_reset = cursor.lastrowid
 
-                    connection.commit()
-                    session['id_password_reset'] = id_password_reset
-                    finish_connection(connection, cursor)
+                        connection.commit()
+                        session['id_password_reset'] = id_password_reset
+                        finish_connection(connection, cursor)
 
-                    return redirect(url_for('verify_code'))
+                        return redirect(url_for('verify_code'))
 
-                except:
-                    context['error'] = 'Erro ao enviar o email'
+                    except:
+                        context['error'] = 'Erro ao enviar o email'
+                else:
+                    context['error'] = 'Erro ao recuperar a senha'
             else:
-                context['error'] = 'Erro ao recuperar a senha'
+                # Já existe código válido
+                session['id_password_reset'] = id_password_reset
+                session["valid_code"] = True
+                return redirect(url_for('verify_code'))
+        #cai quando o usuario ja verificou o codigo
         else:
-            # Já existe código válido
-            session['id_password_reset'] = id_password_reset
-            session["valid_code"] = True
-            return redirect(url_for('verify_code'))
+            print('caiu aqui')
+            return redirect(url_for('reset_password_page'))
 
     finish_connection(connection, cursor)
     return render_template('recovery_password.html', context=context)
