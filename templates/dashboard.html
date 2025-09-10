@@ -8,8 +8,16 @@
     <title>Document</title>
 </head>
 <body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logout"><a href="{{ url_for('logout') }}">Sair <span>teste</span></a></div>
+        </div>
+        <div class="dashboard">
+            <div class="navbar"></div>
+            <div class="content"></div>
+        </div>
+    </div>
 
     {% include "partials/alert.html" %}
-    <a href="{{ url_for('logout') }}">Sair</a>
 </body>
 </html>

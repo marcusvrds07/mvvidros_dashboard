@@ -77,7 +77,6 @@ def user_login(context):
             connection.commit()
 
             finish_connection(connection, cursor)
-            flash("Sua conta foi criada com sucesso!", "success")
             return redirect(url_for("dashboard"))
 
     # Se falhar login, encerra conexão e retorna erro
