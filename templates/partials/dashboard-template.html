@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='partials/alert/styles.css') }}">
+    {% block extracss %}{% endblock extracss %}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,6 +73,14 @@
             ahref.addEventListener('click', e => {
                 e.preventDefault();
             });
+
+            const toggleBtn = document.querySelector(".menu-btn");
+            const sidebar = document.querySelector(".sidebar");
+
+            toggleBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("collapsed");
+            });
+
             
         });
     </script>

@@ -128,6 +128,10 @@ def dashboard():
     context = {
         'title': 'Dashboard',
         'page': 'dashboard',
+        'user': {
+            'name': 'Marcus Vinicius',
+            'role': 'Administrador',
+        },
     }
     return render_template("dashboard/index.html", context=context)
 
