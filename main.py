@@ -125,7 +125,38 @@ def reset_password_page():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    context = {
+        'title': 'Dashboard',
+        'page': 'dashboard',
+    }
+    return render_template("dashboard/index.html", context=context)
+
+@app.route("/dashboard/vendas")
+@login_required
+def dashboard_sales():
+    context = {
+        'title': 'Suas Vendas',
+        'page': 'vendas',
+    }
+    return render_template("dashboard/sales.html", context=context)
+
+@app.route("/dashboard/estoque")
+@login_required
+def dashboard_stock():
+    context = {
+        'title': 'Gerencie o Estoque',
+        'page': 'estoque',
+    }
+    return render_template("dashboard/stock.html", context=context)
+
+@app.route("/dashboard/usuarios")
+@login_required
+def dashboard_users():
+    context = {
+        'title': 'Gerencie os Usuários',
+        'page': 'usuarios',
+    }
+    return render_template("dashboard/users.html", context=context)
 
 
 # ===============================
