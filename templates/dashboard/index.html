@@ -2,12 +2,6 @@
 {% block extracss %} <link rel="stylesheet" href="{{ url_for('static', filename='dashboard/index/styles.css') }}">{% endblock extracss %}
 
 {% block navbar %}
-<div class="menu-btn">
-  <span></span>
-  <span></span>
-  <span></span>
-  <span></span>
-</div>
 <div class="profile">
     <div class="photo"><img src="{{ url_for('static', filename='images/minha.jpg') }}" alt="foto de perfil"></div>
     <div class="info"><span id="username">{{context.user.name}}</span><br><span id="userrole">{{context.user.role}}</span></div>

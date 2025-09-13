@@ -16,26 +16,45 @@ body {
 
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   height: 100%;
 }
 
+/* NAVBAR*/
+.navbar {
+  background-color: #FFFFFF;
+  height: 60px;
+  width: 100%;
+  min-height: 55px; 
+  display: flex;
+  align-items: center;
+  padding: 0px 20px 0px 0px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.dashboard {
+  display: flex;
+  flex: 1;
+  height: calc(100% - 60px);
+  background-color: #f7f3f3;
+}
+
 .sidebar {
-  background: #063683;
+  background: #FFFFFF;
   display: flex;
   flex-direction: column;
   width: 260px;
   height: 100%;
   padding: 20px 0;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
-  transition: width 0.3s ease;
+  transition: width 0.5s ease;
   overflow: hidden;
 }
 
+
 .sidebar.collapsed {
-  width: 0;
+  width: 60px;
 }
 
 .logo {
@@ -45,8 +64,9 @@ body {
 }
 
 .logo img {
-  width: 180px;
-  height: 100px;
+  width: 80px;
+  height: 60px;
+  margin: 0px 90px;
   object-fit: contain;
   filter: drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.4));
 }
@@ -64,11 +84,15 @@ body {
   padding: 0 15px;
 }
 
+.sidebar.collapsed .menu {
+  width: 60px;
+}
+
 .menu h1 {
   font-size: 12px;
   letter-spacing: 1px;
   margin-bottom: 10px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #1e3a8a;
   text-transform: uppercase;
 }
 
@@ -81,24 +105,25 @@ body {
 
 .menu li a {
   display: flex;
-  gap: 12px;
   align-items: center;
+  gap: 12px;
   text-decoration: none;
-  color: #ffffff;
+  color: #1e3a8a;
   font-size: 16px;
   font-weight: 500;
   padding: 8px 10px;
   border-radius: 10px;
   transition: all 0.3s ease;
+  width: 100%;
 }
 
 .menu li a:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #0000001e;
 }
 
 .menu li a.active {
-  background: #ffffff17;
-  color: white;
+  background: #1e3a8a;
+  color: #fff;
   font-weight: 600;
   cursor: not-allowed;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
@@ -107,24 +132,39 @@ body {
 .icon-wrap {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon-wrap svg {
   width: 20px;
   height: 20px;
-  fill: white;
+  fill: #1e3a8a;
 }
 
-.menu li a.active .icon-wrap {
-  background: #063683;
+.sidebar.collapsed li a {
+  justify-content: center;
+  gap: 0;
+  width: 46px;
+  height: 46px;
+  margin: 0 auto;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.sidebar.collapsed li a span:not(.icon-wrap),
+.sidebar.collapsed .menu h1 {
+  display: none;
+}
+
+.sidebar.collapsed .menu {
+  padding: 0;
+  margin-top: 20px;
 }
 
 .menu li a.active .icon-wrap svg {
-  fill: #ffffff;
+  fill: #fff;
 }
 
 .logout {
@@ -142,8 +182,8 @@ body {
   font-weight: 500;
   color: #ffffff;
   text-decoration: none;
-  background: #0f2a52;
-  border: 1px solid #1e3a8a;
+  background: #b91c1c;
+  border: 1px solid #880909;
   border-radius: 8px;
   transition: all 0.25s ease;
 }
@@ -152,47 +192,52 @@ body {
   font-size: 13px;
 }
 
+
 .logout a:hover {
-  background: #b91c1c;
-  border-color: #991b1b;
+  background: #880909;
+  border-color: #b91c1c;
   color: #fff;
 }
 
-.dashboard {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  background-color: #f7f3f3;
-  height: 100%;
+.sidebar.collapsed #logout-text{
+  display: none;
 }
 
-.navbar {
-  background-color: #FFFFFF;
-  flex: 0 0 auto;
-  height: 9%;
-  min-height: 55px; 
-  display: flex;
-  align-items: center;
-  
+.sidebar.collapsed .logout {
+  margin: 0 auto;
+}
+.sidebar.collapsed .logout a {
+  width: 50px;
+  padding: 10px 0px;
 }
 
+/* CONTENT */
 .content {
-  background-color: #F8F8F8;
   flex: 1;
+  background-color: #F6F7F9;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 10px;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
 }
 
+/* MENU BUTTON */
 .menu-btn {
   display: flex;
   flex-direction: column;
+  align-items: end;
+  margin: 0 5%;
+  margin-left: auto;
   gap: 3px;
   cursor: pointer;
   width: 25px;
   padding: 1px;
-  margin: 0 5%;
+  transition: margin 0.5s ease, transform 0.5s ease;
+}
+
+.sidebar.collapsed .menu-btn {
+  align-items: start;
+  transform: translateX(-11px);
 }
 
 .menu-btn span {
@@ -208,8 +253,7 @@ body {
   width: 80%;
 }
 
-
-
+/* RESPONSIVO */
 @media (max-width: 900px) {
   .sidebar {
     display: none;
