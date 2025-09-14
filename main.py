@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from modules.manager_database import create_sqlite_tables, connect_to_db, finish_connection
 from modules.auth import user_register, user_login, send_code, reset_password
 from modules.utils.required import login_required, logout_required
+from modules.utils.base_context import dashboard_context_base
 import os, bcrypt, datetime
 
 
@@ -125,43 +126,26 @@ def reset_password_page():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    context = {
-        'title': 'Dashboard',
-        'page': 'dashboard',
-        'user': {
-            'name': 'Marcus Vinicius',
-            'role': 'Administrador',
-        },
-    }
+    context = dashboard_context_base('Dashboard')
     return render_template("dashboard/index.html", context=context)
 
 @app.route("/dashboard/vendas")
 @login_required
 def dashboard_sales():
-    context = {
-        'title': 'Suas Vendas',
-        'page': 'vendas',
-    }
+    context = dashboard_context_base('Suas Vendas')
     return render_template("dashboard/sales.html", context=context)
 
 @app.route("/dashboard/estoque")
 @login_required
 def dashboard_stock():
-    context = {
-        'title': 'Gerencie o Estoque',
-        'page': 'estoque',
-    }
+    context = dashboard_context_base('Estoque')
     return render_template("dashboard/stock.html", context=context)
 
 @app.route("/dashboard/usuarios")
 @login_required
 def dashboard_users():
-    context = {
-        'title': 'Gerencie os Usuários',
-        'page': 'usuarios',
-    }
+    context = dashboard_context_base('Gerencie Usuários')
     return render_template("dashboard/users.html", context=context)
-
 
 # ===============================
 # Rota de Logout

@@ -1,0 +1,212 @@
+/* Página */
+.user-page {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 20px 25px;
+  background: #f4f6f9;
+}
+
+/* Título */
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #005BCA;
+  margin-bottom: 10px;
+}
+
+/* Cards */
+.user-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e5e9f2;
+}
+
+/* Cabeçalho do card */
+.card-header {
+  background: linear-gradient(90deg, #f5f7fa, #edf1f5);
+  padding: 14px 20px;
+  border-bottom: 1px solid #e0e6ed;
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Formulário */
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  min-width: 220px;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  border: 1px solid #d6dbe3;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fafbfc;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #005BCA;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(0,91,202,0.25);
+  outline: none;
+}
+
+/* Botões do formulário */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-submit {
+  background: #005BCA;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit:hover {
+  background: #004099;
+  transform: translateY(-1px);
+}
+
+.btn-cancel {
+  background: #e4e6eb;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #d0d3d6;
+}
+
+/*  Tabela  */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  max-height: 320px;
+  overflow-y: auto;
+  border-top: 1px solid #e5e9f2;
+}
+
+/* Scrollbar */
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #c5c9d6;
+  border-radius: 6px;
+}
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+.table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.user-table th,
+.user-table td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e9f2;
+  font-size: 14px;
+}
+
+.user-table th {
+  background: #f5f7fa;
+  color: #2c3e50;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.user-table tr:nth-child(even) {
+  background-color: #f9fafc;
+}
+
+.user-table tr:hover {
+  background: #eef4ff;
+}
+
+/* Botões de ação */
+.btn-icon {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 6px;
+  transition: transform 0.2s ease, background 0.2s ease;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.btn-icon.edit {
+  color: #ffc107;
+}
+
+.btn-icon.delete {
+  color: #dc3545;
+}
+
+.btn-icon:hover {
+  transform: scale(1.15);
+  background: rgba(0,0,0,0.05);
+}

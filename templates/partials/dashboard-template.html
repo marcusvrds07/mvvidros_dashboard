@@ -16,8 +16,12 @@
     <div class="container">
         <div class="navbar">
             <div class="logo">
-                    <img src="{{ url_for('static', filename='images/testelogo.png') }}" alt="Logo">
-                </div>
+                    <a href="{{url_for('dashboard')}}"><img src="{{ url_for('static', filename='images/testelogo.png') }}" alt="Logo"></a>
+            </div>
+            <div class="profile">
+                <div class="photo"><img src="{{ url_for('static', filename='images/minha.jpg') }}" alt="foto de perfil"></div>
+                <div class="info"><span id="username">{{context.user.name}}</span><br><span id="userrole">{{context.user.role}}</span></div>
+            </div>
             {% block navbar %}{% endblock navbar %}
         </div>
 
@@ -37,7 +41,7 @@
                             <span class="icon-wrap">
                                 <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9H6v-9H3l9-8z"/></svg> 
                             </span>
-                            <span>Dashboard</span>
+                            <span>Início</span>
                             </a>
                         </li>
                     <li>
@@ -69,14 +73,67 @@
                 <div class="logout"><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i><span id='logout-text'>Sair</span>
                 </a></div>
             </div>
-            <div class="content">{% block content %}{% endblock content %}</div>
+            <div class="content">
+                <div class="top-of-page">
+                    <div class="current-path">
+                        <a href="{{url_for('dashboard')}}">
+                            <span class="icon-wrap">
+                                <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9H6v-9H3l9-8z"/></svg>
+                            </span>
+                            </a>
+                            <span>/</span>
+                    </div>
+                </div>
+                {% block content %}{% endblock content %}
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const ahref = document.querySelector('#{{context.page}}');
-            ahref.classList.add('active');
+
+            const paths = window.location.pathname.split('/').filter(Boolean);
+            const ahref = document.querySelector(`#${paths[paths.length - 1]}`);
+
+            if (ahref) {
+                ahref.classList.add("active");
+            }
+
+            const currentPath = document.querySelector('.current-path');
+            if (paths.length > 1) {
+                paths.forEach((path, i) => {
+                    const paragraph = document.createElement('p');
+
+                    if (path !== 'usuarios') {
+                        paragraph.innerText = path.charAt(0) + path.slice(1);
+                    }
+                    else {
+                        paragraph.innerText = 'Usuários '
+                    }
+
+                    currentPath.appendChild(paragraph);
+
+                    if (i !== (paths.length - 1)) {
+                        const arrow = document.createElement('span');
+                        arrow.innerText = '/'
+                        currentPath.appendChild(arrow)
+                    }
+                });
+            }
+            else {
+                const paragraph1 = document.createElement('p');
+                paragraph1.innerText = 'Dashboard';
+                currentPath.appendChild(paragraph1);
+
+                const arrow = document.createElement('span');
+                arrow.innerText = '/';
+                currentPath.appendChild(arrow);
+
+                const paragraph2 = document.createElement('p');
+                paragraph2.innerText = 'Home';
+                currentPath.appendChild(paragraph2);
+            }
+
 
             ahref.addEventListener('click', e => {
                 e.preventDefault();

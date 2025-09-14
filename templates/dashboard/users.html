@@ -1,1 +1,163 @@
 {% extends "partials/dashboard-template.html" %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard/users/styles.css') }}">
+{% endblock extracss %}
+
+{% block content %}
+<div class="user-page">
+    <h2 class="page-title">Gerenciar Usuários</h2>
+
+    <!-- Card: Cadastro -->
+    <div class="user-card">
+        <div class="card-header">
+            <h3><i class="fas fa-user-plus"></i> Cadastrar Novo Usuário</h3>
+        </div>
+        <form action="{{ url_for('dashboard_users') }}" method="POST" class="user-form">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Nome Completo</label>
+                    <input type="text" id="name" name="name" placeholder="Digite o nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="birthdate">Data de Nascimento</label>
+                    <input type="date" id="birthdate" name="birthdate" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cpf">CPF</label>
+                    <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Número de Celular</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(00) 00000-0000" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="exemplo@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Função</label>
+                    <select id="role" name="role" required>
+                        <option value="">Selecione</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Vendedor">Vendedor</option>
+                        <option value="Estoquista">Estoquista</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="reset" class="btn-cancel">Limpar</button>
+                <button type="submit" class="btn-submit">Cadastrar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Card: Lista -->
+    <div class="user-card">
+        <div class="card-header">
+            <h3><i class="fas fa-users"></i> Lista de Usuários</h3>
+        </div>
+        <div class="table-wrapper">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th>E-mail</th>
+                        <th>Função</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Marcus Vinicius</td>
+                        <td>123.456.789-00</td>
+                        <td>(11) 99999-9999</td>
+                        <td>marcus@email.com</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Marcus Vinicius</td>
+                        <td>123.456.789-00</td>
+                        <td>(11) 99999-9999</td>
+                        <td>marcus@email.com</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Marcus Vinicius</td>
+                        <td>123.456.789-00</td>
+                        <td>(11) 99999-9999</td>
+                        <td>marcus@email.com</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Marcus Vinicius</td>
+                        <td>123.456.789-00</td>
+                        <td>(11) 99999-9999</td>
+                        <td>marcus@email.com</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Marcus Vinicius</td>
+                        <td>123.456.789-00</td>
+                        <td>(11) 99999-9999</td>
+                        <td>marcus@email.com</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Marcus Vinicius</td>
+                        <td>123.456.789-00</td>
+                        <td>(11) 99999-9999</td>
+                        <td>marcus@email.com</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Maria Souza</td>
+                        <td>987.654.321-00</td>
+                        <td>(21) 98888-7777</td>
+                        <td>maria@email.com</td>
+                        <td>Vendedora</td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}
