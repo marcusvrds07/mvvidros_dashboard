@@ -78,83 +78,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Marcus Vinicius</td>
-                        <td>123.456.789-00</td>
-                        <td>(11) 99999-9999</td>
-                        <td>marcus@email.com</td>
-                        <td>Administrador</td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
-                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
+                    {% for item in context.users_info %}
+                        <tr>
+                            <td>Marcus Vinicius</td>
+                            <td>123.456.789-00</td>
+                            <td>(11) 99999-9999</td>
+                            <td>{{item[0]}}</td>
+                            <td>Administrador</td>
+                            <td>
+                                <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                            </td>
                     </tr>
-                    <tr>
-                        <td>Marcus Vinicius</td>
-                        <td>123.456.789-00</td>
-                        <td>(11) 99999-9999</td>
-                        <td>marcus@email.com</td>
-                        <td>Administrador</td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
-                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Marcus Vinicius</td>
-                        <td>123.456.789-00</td>
-                        <td>(11) 99999-9999</td>
-                        <td>marcus@email.com</td>
-                        <td>Administrador</td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
-                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Marcus Vinicius</td>
-                        <td>123.456.789-00</td>
-                        <td>(11) 99999-9999</td>
-                        <td>marcus@email.com</td>
-                        <td>Administrador</td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
-                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Marcus Vinicius</td>
-                        <td>123.456.789-00</td>
-                        <td>(11) 99999-9999</td>
-                        <td>marcus@email.com</td>
-                        <td>Administrador</td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
-                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Marcus Vinicius</td>
-                        <td>123.456.789-00</td>
-                        <td>(11) 99999-9999</td>
-                        <td>marcus@email.com</td>
-                        <td>Administrador</td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
-                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Maria Souza</td>
-                        <td>987.654.321-00</td>
-                        <td>(21) 98888-7777</td>
-                        <td>maria@email.com</td>
-                        <td>Vendedora</td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
-                            <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
