@@ -3,8 +3,44 @@
 
 {% block navbar %}
 {% endblock navbar %}
-
 {% block content %} 
+{% if context.first_login %}
+<div class="modal-overlay active" id="passwordModal">
+{% else %}
+<div class="modal-overlay" id="passwordModal">
+{% endif %}
+  <div class="modal">
+    <h2>Trocar Senha</h2>
+    <p class="modal-info">
+      Este é o seu primeiro acesso. Por motivos de segurança, é necessário redefinir sua senha.
+    </p>
+    <form action="{{url_for('reset_password_page')}}" method="POST" class="modal-form" onsubmit='authValidation(event)'>
+      <div class="form-group">
+        <label for="password">Nova Senha</label>
+        <input type="password" id="password" name="password" placeholder='Informe sua senha'>
+      </div>
+      <div class="form-group">
+        <label for="password-confirm">Confirmar Senha</label>
+        <input type="password" id="password-confirm" name="password-confirm" placeholder='Confirme sua senha'>
+      </div>
+      <div class="error-messages"></div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 {% endblock content %}   
 
+{% block extracript %}
+<script src="{{ url_for('static', filename='authpage/scripts.js') }}"></script>
+
+{% if context.error %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        showErrorMessage("{{context.error}}");
+    });
+</script>
+{% endif %}
+{% endblock extracript %}

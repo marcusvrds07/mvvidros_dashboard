@@ -1,16 +1,15 @@
-import bcrypt, uuid, smtplib, random, os, datetime
-from modules.manager_database import connect_to_db, finish_connection
+import bcrypt, uuid, random, os, datetime
+from modules.manager_database import connect_to_db, finish_connection, insert_password_at_database
 from flask import request, redirect, url_for, session, flash, render_template
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from modules.utils.validations import password_validator, email_validator
+from modules.utils.utils import send_email
 
 
 # ===============================
 # Função responsável por registrar um novo usuário
 # ===============================
+
 def user_register():
-    connection, cursor = connect_to_db()
     signup_login = request.form.get("signup-login", "").strip()
     signup_password = request.form.get("signup-password", "").strip()
 
@@ -19,16 +18,8 @@ def user_register():
             signup_password = bcrypt.hashpw(signup_password.encode(), bcrypt.gensalt())
 
             try:
-                # Inserção do novo usuário no banco de dados
-                cursor.execute(
-                    'INSERT INTO users_login (login, password) VALUES (?, ?)',
-                    (signup_login, signup_password,)
-                )
-                connection.commit()
-                finish_connection(connection, cursor)
-
+                insert_password_at_database(signup_login, signup_password, False)
                 flash("Conta criada com sucesso!", "success")
-                # Redireciona para login após criação
                 return redirect(url_for("login"))
 
             except:
@@ -55,11 +46,11 @@ def user_login(context):
     login_password = request.form.get("login-password", "").strip().encode('utf8')
 
     connection, cursor = connect_to_db()
-    cursor.execute('SELECT password FROM users_login WHERE login = ?', (login,))
-    hashed_password = cursor.fetchone()
+    cursor.execute('SELECT password, first_login FROM users_login WHERE login = ?', (login,))
+    db_hashed_password, first_login = cursor.fetchone() or (None, None)  
 
-    if hashed_password is not None:
-        hashed_password = hashed_password[0]
+    if db_hashed_password is not None:
+        hashed_password = db_hashed_password
         if isinstance(hashed_password, str):
             hashed_password = hashed_password.encode("utf-8")
 
@@ -75,8 +66,10 @@ def user_login(context):
                 (session.get('session_token', ''), login,)
             )
             connection.commit()
-
+            
             finish_connection(connection, cursor)
+            if first_login:
+                session['first_login'] = True
             return redirect(url_for("dashboard"))
 
     # Se falhar login, encerra conexão e retorna erro
@@ -94,12 +87,6 @@ def send_code():
 
     if request.method == "POST":
         now = datetime.datetime.now()
-
-        # Configurações de e-mail
-        SMTP_SERVER = "smtp.gmail.com"
-        SMTP_PORT = 587
-        EMAIL = os.getenv("EMAIL")
-        SENHA = os.getenv("SENHA_EMAIL")
 
         # Gera código aleatório de 6 dígitos
         recovery_code = str(random.randint(100000, 999999))
@@ -121,13 +108,8 @@ def send_code():
             # Se não existe código válido
             if id_password_reset is None:
                 #verifica se o email e a senha da env e o email de recuperação são vazios
-                if email_recovery and EMAIL and SENHA:
-                    msg = MIMEMultipart("alternative")
-                    msg["From"] = EMAIL
-                    msg["To"] = email_recovery
-                    msg["Subject"] = "Redefinição de Senha"
-
-                    html = f"""
+                if email_recovery:
+                    email_template = f"""
                     <html>
                     <body style="font-family: Arial, sans-serif; text-align: center; background: #f4f6f8; padding: 20px;">
                         <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
@@ -142,15 +124,9 @@ def send_code():
                     </body>
                     </html>
                     """
-                    msg.attach(MIMEText(html, "html"))
 
                     try:
-                        # Envio do email ao usuário
-                        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-                            server.starttls()
-                            server.login(EMAIL, SENHA)
-                            server.sendmail(EMAIL, msg["To"], msg.as_string())
-
+                        send_email(email_recovery, 'Redefinição de Senha', email_template)
                         # Salva hash do código no banco
                         recovery_code = bcrypt.hashpw(recovery_code.encode(),bcrypt.gensalt()).decode()
 
@@ -200,12 +176,21 @@ def reset_password():
         if password == confirm_password:
             if password_validator(password):
                 password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
-                cursor.execute(
-                    'UPDATE users_login SET password = ? WHERE id = ?',
-                    (password, session.pop('confirmed_user_id'))
-                )
+                if not session.get('first_login', False):
+                    cursor.execute(
+                        'UPDATE users_login SET password = ?, first_login = ? WHERE id = ?',
+                        (password, False, session.pop('confirmed_user_id', ''))
+                    )
+                else:
+                    cursor.execute(
+                        'UPDATE users_login SET password = ?, first_login = ? WHERE login = ?',
+                        (password, False, session.get('user_login', ''))
+                    )
                 connection.commit()
                 finish_connection(connection, cursor)
+
+                if session.pop('first_login', False):
+                    return redirect(url_for('dashboard'))
                 return redirect(url_for('login'))
             else:
                 context['error'] = 'Senha inválida'

@@ -3,6 +3,7 @@ from modules.manager_database import create_sqlite_tables, connect_to_db, finish
 from modules.auth import user_register, user_login, send_code, reset_password
 from modules.utils.required import login_required, logout_required
 from modules.utils.base_context import dashboard_context_base
+from modules.dashboard import users
 import os, bcrypt, datetime
 
 
@@ -114,19 +115,24 @@ def verify_code():
 @app.route("/reset_password", methods=['GET', 'POST'])
 @logout_required
 def reset_password_page():
-    if 'confirmed_user_id' in session:
+    if 'confirmed_user_id' in session or (request.method == 'POST' and session.get('first_login', False)):
         return reset_password()
     else:
+        print('entrou 2')
         return redirect(url_for('login'))
 
 
 # ===============================
-# Rota do Dashboard (restrita a usuários logados)
+# Rotas da Dashboard (restrita a usuários logados)
 # ===============================
 @app.route("/dashboard")
 @login_required
 def dashboard():
     context = dashboard_context_base('Dashboard')
+
+    if session.get('first_login', ''):
+        context['first_login'] = True
+
     return render_template("dashboard/index.html", context=context)
 
 @app.route("/dashboard/vendas")
@@ -141,11 +147,10 @@ def dashboard_stock():
     context = dashboard_context_base('Estoque')
     return render_template("dashboard/stock.html", context=context)
 
-@app.route("/dashboard/usuarios")
+@app.route("/dashboard/usuarios", methods=["GET", "POST"])
 @login_required
 def dashboard_users():
-    context = dashboard_context_base('Gerencie Usuários')
-    return render_template("dashboard/users.html", context=context)
+    return users()
 
 # ===============================
 # Rota de Logout

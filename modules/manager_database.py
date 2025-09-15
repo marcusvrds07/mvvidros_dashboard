@@ -11,6 +11,7 @@ def create_sqlite_tables():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         login TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
+        first_login BOOLEAN DEFAULT 0,
         session_token TEXT
     );
     ''',
@@ -50,3 +51,14 @@ def connect_to_db():
 def finish_connection(connection, cursor):
     cursor.close()
     connection.close()
+
+def insert_password_at_database(signup_login, signup_password, first_login):
+    connection, cursor = connect_to_db()    
+    
+    # Inserção do novo usuário no banco de dados
+    cursor.execute(
+        'INSERT INTO users_login (login, password, first_login) VALUES (?, ?, ?)',
+        (signup_login, signup_password, first_login)
+    )
+    connection.commit()
+    finish_connection(connection, cursor)

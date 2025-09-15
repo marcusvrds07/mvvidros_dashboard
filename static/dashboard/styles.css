@@ -373,4 +373,7 @@ body {
   .sidebar {
     display: none;
   }
+  .logo img {
+    margin: 0px 0px 0px 10px;
+  }
 }
