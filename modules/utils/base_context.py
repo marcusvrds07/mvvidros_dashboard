@@ -4,6 +4,6 @@ def dashboard_context_base(title):
         'title': title,
         'user': {
             'name': 'Marcus Vinicius',
-            'role': 'Administrador',
+            'position_in_the_company': 'Administrador',
         },
     }

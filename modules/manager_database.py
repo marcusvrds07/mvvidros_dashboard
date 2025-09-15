@@ -25,6 +25,18 @@ def create_sqlite_tables():
 
             FOREIGN KEY (id_login) REFERENCES users_login (id)
         )
+    ''',
+    '''
+    CREATE TABLE IF NOT EXISTS users_info (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id_login INTEGER UNIQUE NOT NULL,
+        full_name TEXT NOT NULL,
+        date_of_birth DATE NOT NULL,
+        phone_number VARCHAR(20) NOT NULL,
+        cpf VARCHAR(11) NOT NULL,
+        position_in_company TEXT NOT NULL,
+        FOREIGN KEY (id_login) REFERENCES users_login (id) ON DELETE CASCADE
+    );
     '''
     ]
 

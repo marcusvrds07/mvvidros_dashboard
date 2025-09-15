@@ -10,7 +10,7 @@ from modules.utils.utils import send_email
 # ===============================
 
 def user_register():
-    signup_login = request.form.get("signup-login", "").strip()
+    signup_login = request.form.get("signup-login", "").strip().lower()
     signup_password = request.form.get("signup-password", "").strip()
 
     if email_validator(signup_login):
@@ -36,8 +36,6 @@ def user_register():
             }
         return render_template("login.html", context=context)
 
-
-
 # ===============================
 # Função responsável por autenticar o usuário
 # ===============================
@@ -60,6 +58,9 @@ def user_login(context):
             session["session_token"] = str(uuid.uuid4())
             session['user_login'] = login
 
+            cursor.execute('SELECT ui.id, ui.name FROM users_info as ui JOIN users_login as ul ON ul.id = ui.id_login')
+            user_info = cursor.fetchone()
+
             # Atualiza token no banco para login único
             cursor.execute(
                 'UPDATE users_login SET session_token = ? WHERE login = ?',
@@ -70,6 +71,8 @@ def user_login(context):
             finish_connection(connection, cursor)
             if first_login:
                 session['first_login'] = True
+            if not user_info:
+                session['no_user_info'] = True
             return redirect(url_for("dashboard"))
 
     # Se falhar login, encerra conexão e retorna erro
@@ -90,7 +93,7 @@ def send_code():
 
         # Gera código aleatório de 6 dígitos
         recovery_code = str(random.randint(100000, 999999))
-        reset_email = request.form.get("reset_email", "").strip()
+        reset_email = request.form.get("reset_email", "").strip().lower()
 
         # Consulta usuário e códigos ativos
         cursor.execute('''SELECT ul.id, ul.login, pr.id, pr.id_login
@@ -155,7 +158,6 @@ def send_code():
                 return redirect(url_for('verify_code'))
         #cai quando o usuario ja verificou o codigo
         else:
-            print('caiu aqui')
             return redirect(url_for('reset_password_page'))
 
     finish_connection(connection, cursor)

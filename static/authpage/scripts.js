@@ -20,19 +20,18 @@ function updateMessage(text, status) {
 }
 
 // --- renderiza mensagens ---
-function showErrorMessage(message) {
-    const error_message = document.querySelector('.error-messages');
+function showErrorMessage(message, selector = '.error-messages') {
+    const error_message = document.querySelector(selector); // agora pega o container correto
+
+    if (!error_message) return;
 
     if (typeof message === "string") {
-        // evita recriar se já existe
-        let element = error_message.querySelector('#error-message');
+        let element = error_message.querySelector('p');
         if (!element) {
             element = document.createElement('p');
-            element.id = 'error-message';
-            error_message.innerHTML = "";
             element.textContent = message;
+            error_message.innerHTML = "";
             error_message.appendChild(element);
-
             requestAnimationFrame(() => {
                 element.classList.add('show');
             });
@@ -53,7 +52,6 @@ function showErrorMessage(message) {
             div.setAttribute('data-msg', item.text);
             div.textContent = item.text;
             error_message.appendChild(div);
-
             requestAnimationFrame(() => {
                 div.classList.add('show');
             });
@@ -136,9 +134,6 @@ function authValidation(event) {
 // --- validação em tempo real após o submit inicial ---
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector("form");
-    if (form) {
-        form.addEventListener("submit", authValidation);
-    }
 
     const allInputs = document.querySelectorAll('input[type="text"], input[type="password"]');
     allInputs.forEach(input => {

@@ -134,6 +134,31 @@
   background: #004099;
 }
 
+/* estilo geral do select dentro do modal */
+.modal-form select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #c8c7c7;
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* foco */
+.modal-form select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+  outline: none;
+}
+
+.error-messages p {
+  color: red;
+  font-size: 14px;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;

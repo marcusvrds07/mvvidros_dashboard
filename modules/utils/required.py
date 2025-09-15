@@ -9,7 +9,7 @@ def login_required(f):
         if "session_token" not in session or "user_login" not in session:
             return redirect(url_for("logout"))
         
-        if session.get('first_login', False) and request.endpoint != "dashboard":
+        if (session.get('first_login', False) and request.endpoint != "dashboard") or session.get('no_user_info', False) and request.endpoint != "dashboard":
             return redirect(url_for('dashboard'))
 
         connection, cursor = connect_to_db()
