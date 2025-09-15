@@ -21,7 +21,7 @@ function updateMessage(text, status) {
 
 // --- renderiza mensagens ---
 function showErrorMessage(message, selector = '.error-messages') {
-    const error_message = document.querySelector(selector); // agora pega o container correto
+    const error_message = document.querySelector(selector);
 
     if (!error_message) return;
 

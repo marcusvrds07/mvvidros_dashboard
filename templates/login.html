@@ -54,9 +54,9 @@
 
   {% if context.error %}
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            showErrorMessage("{{context.error}}");
-        });
+    document.addEventListener("DOMContentLoaded", function () {
+              showErrorMessage("{{context.error}}", ".error-messages");
+          });
     </script>
   {% endif %}
 

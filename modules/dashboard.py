@@ -46,6 +46,7 @@ def home_page():
             context['no_user_info'] = True
         else:
             session.pop('no_user_info', None)
+            flash("As informações foram salvas com sucesso!", "error")
             # falta salvar as coisa na bd
         
     for key in ["first_login", "no_user_info"]:

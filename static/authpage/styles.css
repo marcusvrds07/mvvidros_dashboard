@@ -122,7 +122,7 @@ body {
     margin-bottom: 2px;
 }
 
-#error-message {
+.error-messages p {
     opacity: 0;
     max-height: 0;
     overflow: hidden;
@@ -131,7 +131,7 @@ body {
     font-size: 13px;
 }
 
-#error-message.show {
+.error-messages p.show {
     opacity: 1;
     max-height: 100px;
 }
