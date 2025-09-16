@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("#userInfoModal form");
+    let form = document.querySelector("#userInfoModal form");
+
+    if (!form) {
+        form = document.querySelector(".user-card form");
+    }
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();

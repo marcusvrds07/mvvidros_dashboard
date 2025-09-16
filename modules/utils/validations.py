@@ -92,6 +92,7 @@ def check_name(name):
 def check_date(date_of_input, format=False):
     if format:
         format_date = f'{date_of_input[8:]}/{date_of_input[5:7]}/{date_of_input[0:4]}'
+        return format_date
     else:
         current_date = datetime.now()
         standard_format = r'^(\d{4})-(\d{2})-(\d{2})$'

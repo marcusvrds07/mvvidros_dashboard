@@ -166,6 +166,7 @@
   padding: 12px 14px;
   border-bottom: 1px solid #e5e9f2;
   font-size: 14px;
+  white-space: nowrap;
 }
 
 .user-table th {
@@ -209,4 +210,9 @@
 .btn-icon:hover {
   transform: scale(1.15);
   background: rgba(0,0,0,0.05);
+}
+
+.error-messages p {
+  color: red;
+  font-size: 14px;
 }

@@ -17,23 +17,31 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="name">Nome Completo</label>
-                    <input type="text" id="name" name="name" placeholder="Digite o nome completo" >
+                    <label for="full_name">Nome Completo</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="Informe seu nome"
+                    value="{{ context.full_name_val or '' }}" required>
+                    <div class="error-messages" id="error-nome"></div>
                 </div>
                 <div class="form-group">
-                    <label for="birthdate">Data de Nascimento</label>
-                    <input type="date" id="birthdate" name="birthdate" >
+                    <label for="date_of_birth">Data de Nascimento</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth"
+                    value="{{ context.date_val or '' }}" required>
+                    <div class="error-messages" id="error-date"></div>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="cpf">CPF</label>
-                    <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" >
+                    <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00"
+                    value="{{ context.cpf_val or '' }}" required>
+                    <div class="error-messages" id="error-cpf"></div>
                 </div>
                 <div class="form-group">
-                    <label for="phone">Número de Celular</label>
-                    <input type="tel" id="phone" name="phone" placeholder="(00) 00000-0000" >
+                    <label for="telephone_number">Número de Celular</label>
+                    <input type="tel" id="telephone_number" name="telephone_number"
+                    value="{{ context.telephone_val or '' }}" placeholder="(00) 00000-0000" required>
+                    <div class="error-messages" id="error-telephone"></div>
                 </div>
             </div>
 
@@ -42,16 +50,17 @@
                     <label for="email">E-mail</label>
                     <input type="email" id="email" name="email" placeholder="exemplo@email.com" >
                     {% if context.email_error %}
-                    <p>{{context.email_error}}</p>
+                    <div class="error-messages"><p>{{context.email_error}}</p></div>
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    <label for="position_in_the_company">Função</label>
-                    <select id="position_in_the_company" name="position_in_the_company" >
-                        <option value="">Selecione</option>
-                        <option value="Administrador">Administrador</option>
-                        <option value="Vendedor">Vendedor</option>
-                        <option value="Estoquista">Estoquista</option>
+                    <label for="position">Função</label>
+                    <select id="position" name="position" >
+                        <option value="Estagiário" {% if context.position_val == "Estagiário" %}selected{% endif %}>Estagiário</option>
+                        <option value="Administrador" {% if context.position_val == "Administrador" %}selected{% endif %}>Administrador</option>
+                        <option value="Gerente" {% if context.position_val == "Gerente" %}selected{% endif %}>Gerente</option>
+                        <option value="Supervisor" {% if context.position_val == "Supervisor" %}selected{% endif %}>Supervisor</option>
+                        <option value="Funcionário" {% if context.position_val == "Funcionário" %}selected{% endif %}>Funcionário</option>
                     </select>
                 </div>
             </div>
@@ -76,18 +85,20 @@
                         <th>CPF</th>
                         <th>Telefone</th>
                         <th>E-mail</th>
+                        <th>Data de Nascimento</th>
                         <th>Função</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in context.users_info %}
+                    {% for user in context.users_info %}
                         <tr>
-                            <td>Marcus Vinicius</td>
-                            <td>123.456.789-00</td>
-                            <td>(11) 99999-9999</td>
-                            <td>{{item[0]}}</td>
-                            <td>Administrador</td>
+                            <td>{{user.name}}</td>
+                            <td>{{user.cpf}}</td>
+                            <td>{{user.phone}}</td>
+                            <td>{{user.email}}</td>
+                            <td>{{user.birth_date}}</td>
+                            <td>{{user.position}}</td>
                             <td>
                                 <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
                                 <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
@@ -100,3 +111,22 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block extracript %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const errors = {
+        {% if context.name_error %}"#error-nome": "{{ context.name_error }}",{% endif %}
+        {% if context.date_error %}"#error-date": "{{ context.date_error }}",{% endif %}
+        {% if context.cpf_error %}"#error-cpf": "{{ context.cpf_error }}",{% endif %}
+        {% if context.telephone_error %}"#error-telephone": "{{ context.telephone_error }}",{% endif %}
+    };
+
+    for (const [selector, message] of Object.entries(errors)) {
+        showErrorMessage(message, selector);
+    }
+});
+</script>
+
+<script src='{{ url_for('static', filename='dashboard/index/scripts.js') }}'></script>
+{% endblock extracript %}

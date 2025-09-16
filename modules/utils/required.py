@@ -13,7 +13,8 @@ def login_required(f):
             return redirect(url_for('dashboard'))
 
         connection, cursor = connect_to_db()
-        cursor.execute('SELECT session_token FROM users_login WHERE login = ?', (session.get('user_login', ''),))
+        user_login = session.get('user_login')
+        cursor.execute('SELECT session_token FROM users_login WHERE login = ?', (user_login[0],))
         row = cursor.fetchone()
         db_token = row[0] if row else None
         finish_connection(connection, cursor)

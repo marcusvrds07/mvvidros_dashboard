@@ -44,8 +44,8 @@ def user_login(context):
     login_password = request.form.get("login-password", "").strip().encode('utf8')
 
     connection, cursor = connect_to_db()
-    cursor.execute('SELECT password, first_login FROM users_login WHERE login = ?', (login,))
-    db_hashed_password, first_login = cursor.fetchone() or (None, None)  
+    cursor.execute('SELECT id, password, first_login FROM users_login WHERE login = ?', (login,))
+    id, db_hashed_password, first_login = cursor.fetchone() or (None, None, None)  
 
     if db_hashed_password is not None:
         hashed_password = db_hashed_password
@@ -56,9 +56,9 @@ def user_login(context):
         if bcrypt.checkpw(login_password, hashed_password):
             # Geração de novo token de sessão
             session["session_token"] = str(uuid.uuid4())
-            session['user_login'] = login
+            session['user_login'] = (login, id)
 
-            cursor.execute('SELECT ui.id, ui.name FROM users_info as ui JOIN users_login as ul ON ul.id = ui.id_login')
+            cursor.execute('SELECT ui.id, ui.full_name FROM users_info as ui JOIN users_login as ul ON ul.id = ui.id_login')
             user_info = cursor.fetchone()
 
             # Atualiza token no banco para login único
@@ -184,9 +184,10 @@ def reset_password():
                         (password, False, session.pop('confirmed_user_id', ''))
                     )
                 else:
+                    user_login = session.get('user_login')
                     cursor.execute(
                         'UPDATE users_login SET password = ?, first_login = ? WHERE login = ?',
-                        (password, False, session.get('user_login', ''))
+                        (password, False, user_login[0])
                     )
                 connection.commit()
                 finish_connection(connection, cursor)

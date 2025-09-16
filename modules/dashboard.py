@@ -12,7 +12,7 @@ def generate_password(size=10):
 def home_page():
     context = dashboard_context_base('Dashboard')
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'no_user_info' in session:
         full_name_val = request.form.get("full_name", "").strip().title()
         date_of_birth_val = request.form.get("date_of_birth", "").strip()
         cpf_val = request.form.get("cpf", "").strip()
@@ -46,8 +46,19 @@ def home_page():
             context['no_user_info'] = True
         else:
             session.pop('no_user_info', None)
-            flash("As informações foram salvas com sucesso!", "error")
-            # falta salvar as coisa na bd
+            user_login = session.get('user_login')
+            connection, cursor = connect_to_db()
+
+            try:
+                cursor.execute('INSERT INTO users_info (id_login, full_name, date_of_birth, phone_number, cpf, position_in_company) VALUES (?, ?, ?, ?, ?, ?)', (user_login[1],full_name[1], date_of_birth[1], telephone_number[1], cpf[1], position_val,))
+                connection.commit() 
+                flash("As informações foram salvas com sucesso!", "success")
+            finally:
+                finish_connection(connection, cursor)
+
+
+
+
         
     for key in ["first_login", "no_user_info"]:
         if session.get(key, False):
@@ -64,6 +75,7 @@ def users():
 
         if email_validator(email):
             try:
+                #preciso refazer isso aqui, pois preciso verificar todas as infos antes de salvar algo, preciso ter o id do login tb pra salvar as infos!
                 insert_password_at_database(email, password, True)
                 send_email(email, 'Cadastro Realizado', temporary_password)
             except sqlite3.IntegrityError as e:
@@ -81,8 +93,16 @@ def users():
         
     # Visualizar Lista de usuarios cadastrados
     connection, cursor = connect_to_db()
-    cursor.execute('SELECT login, password FROM users_login')
-    users_info = cursor.fetchall()
+    cursor.execute('SELECT ui.full_name, ui.cpf, ui.phone_number, ul.login, ui.date_of_birth, ui.position_in_company FROM users_login as ul JOIN users_info as ui ON ui.id_login = ul.id')
+    keys = ["name", "cpf", "phone", "email", "birth_date", "position"]
+
+    users_info = [
+        dict(zip(keys, user_info))
+        for user_info in cursor.fetchall()
+    ]
+
+    for user in users_info:
+        user.update({"birth_date": check_date(user.get('birth_date', ''), True)})
     context['users_info'] = users_info
 
     finish_connection(connection, cursor)

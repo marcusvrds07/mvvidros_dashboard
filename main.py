@@ -153,9 +153,10 @@ def dashboard_users():
 def logout():
     if "user_login" in session or "session_token" in session:
         connection, cursor = connect_to_db()
+        user_login = session.get('user_login')
         cursor.execute(
             "UPDATE users_login SET session_token = NULL WHERE login = ?",
-            (session.get('user_login', ''),)
+            (user_login[0],)
         )
         connection.commit()
         finish_connection(connection, cursor)
