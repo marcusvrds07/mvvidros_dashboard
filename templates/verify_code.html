@@ -30,8 +30,8 @@
               <p style="color:red; font-size:13px; text-align:left" id='error'>{{ context.error }}</p>
         {% endif %}
         <button type="submit">Validar Código</button>
-        <div class="back-to-home"><a href="{{url_for('login')}}">Deseja voltar ao Início?</a></div>
-        <a href="{{ url_for('login') }}">
+        <div class="back-to-home"><a href="{{url_for('auth.login_page')}}">Deseja voltar ao Início?</a></div>
+        <a href="{{ url_for('auth.login_page') }}">
             <img src="{{ url_for('static', filename='images/mvlogo.png') }}" alt="Logo">
         </a>
 

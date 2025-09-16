@@ -1,0 +1,63 @@
+from modules.services.email_service import send_email
+from modules.core.validations import email_validator
+import sqlite3, smtplib, bcrypt, secrets, string
+from modules.database.manager import connect_to_db, finish_connection, insert_password_at_database
+from modules.core.validations import check_name, check_date, check_cpf, check_phone_number
+
+def generate_password(size=10):
+    characters = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(characters) for _ in range(size))
+
+def create_user(email):
+    email = email.strip().lower()
+    if not email_validator(email):
+        return {"success": False, "error": "O email precisa ser válido!"}
+
+    temporary_password = generate_password()
+    password = bcrypt.hashpw(temporary_password.encode(), bcrypt.gensalt())
+
+    try:
+        insert_password_at_database(email, password, True)
+        send_email(email, "Cadastro Realizado", temporary_password)
+        return {"success": True, "message": "Usuário criado com sucesso"}
+    except sqlite3.IntegrityError as e:
+        if "UNIQUE constraint failed" in str(e):
+            return {"success": False, "error": "O email já existe em nosso banco de dados!"}
+    except smtplib.SMTPRecipientsRefused:
+        return {"success": False, "error": "Destinatário inválido!"}
+    except smtplib.SMTPException:
+        return {"success": False, "error": "Erro ao enviar e-mail!"}
+
+def save_user_info(user_login, form):
+    full_name = check_name(form.get("full_name", "").strip().title())
+    date_of_birth = check_date(form.get("date_of_birth", "").strip())
+    cpf = check_cpf(form.get("cpf", "").strip())
+    phone_number = check_phone_number(form.get("telephone_number", "").strip())
+    position = form.get("position", "").strip()
+
+    # Validações
+    if not full_name[0]:
+        return {"success": False, "error_field": "name_error", "message": "O nome é obrigatório"}
+    if not date_of_birth[0]:
+        return {"success": False, "error_field": "date_error", "message": "A data de nascimento é inválida"}
+    if not cpf[0]:
+        return {"success": False, "error_field": "cpf_error", "message": "O CPF informado é inválido"}
+    if not phone_number[0]:
+        return {"success": False, "error_field": "telephone_error", "message": "O telefone informado é inválido"}
+
+    # Inserção no banco
+    connection, cursor = connect_to_db()
+    try:
+        cursor.execute(
+            """
+            INSERT INTO users_info 
+                (id_login, full_name, date_of_birth, phone_number, cpf, position_in_company)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (user_login[1], full_name[1], date_of_birth[1], phone_number[1], cpf[1], position)
+        )
+        connection.commit()
+    finally:
+        finish_connection(connection, cursor)
+
+    return {"success": True, "message": "As informações foram salvas com sucesso!"}

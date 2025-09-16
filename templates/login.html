@@ -30,7 +30,7 @@
             <button type="submit">Entrar</button>
           </form>
         </div>
-        <div class="forgot-password"><a href="{{url_for('recovery_password')}}">Esqueceu a senha?</a></div>
+        <div class="forgot-password"><a href="{{url_for('auth.recovery_password')}}">Esqueceu a senha?</a></div>
       {% else %}
         <div class="auth-title"><h1>Cadastre sua conta</h1></div>
         <div class="auth-form">
@@ -48,7 +48,7 @@
           </form>
         </div>
       {% endif %}
-      <a href="{{url_for('login')}}"><img src="{{ url_for('static', filename='images/mvlogo.png') }}" alt="Logo"></a>
+      <a href="{{url_for('auth.login_page')}}"><img src="{{ url_for('static', filename='images/mvlogo.png') }}" alt="Logo"></a>
     </div>
   </div>
 
