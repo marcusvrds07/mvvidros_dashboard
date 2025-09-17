@@ -29,21 +29,38 @@ def create_user(email):
         return {"success": False, "error": "Erro ao enviar e-mail!"}
 
 def save_user_info(user_login, form):
-    full_name = check_name(form.get("full_name", "").strip().title())
-    date_of_birth = check_date(form.get("date_of_birth", "").strip())
-    cpf = check_cpf(form.get("cpf", "").strip())
-    phone_number = check_phone_number(form.get("telephone_number", "").strip())
-    position = form.get("position", "").strip()
+    values = {
+        "full_name_val": form.get("full_name", "").strip().title(),
+        "date_val": form.get("date_of_birth", "").strip(),
+        "cpf_val": form.get("cpf", "").strip(),
+        "telephone_val": form.get("telephone_number", "").strip(),
+        "position_val": form.get("position", "").strip()
+    }
 
-    # Validações
+    full_name = check_name(values["full_name_val"])
+    date_of_birth = check_date(values["date_val"])
+    cpf = check_cpf(values["cpf_val"])
+    phone_number = check_phone_number(values["telephone_val"])
+
+    # Validações encadeadas
     if not full_name[0]:
-        return {"success": False, "error_field": "name_error", "message": "O nome é obrigatório"}
-    if not date_of_birth[0]:
-        return {"success": False, "error_field": "date_error", "message": "A data de nascimento é inválida"}
-    if not cpf[0]:
-        return {"success": False, "error_field": "cpf_error", "message": "O CPF informado é inválido"}
-    if not phone_number[0]:
-        return {"success": False, "error_field": "telephone_error", "message": "O telefone informado é inválido"}
+        field, message = "name_error", "O nome é obrigatório"
+    elif not date_of_birth[0]:
+        field, message = "date_error", "A data de nascimento é inválida"
+    elif not cpf[0]:
+        field, message = "cpf_error", "O CPF informado é inválido"
+    elif not phone_number[0]:
+        field, message = "telephone_error", "O telefone informado é inválido"
+    else:
+        field, message = None, None
+
+    if field:
+        return {
+            "success": False,
+            "error_field": field,
+            "message": message,
+            "context_update": values
+        }
 
     # Inserção no banco
     connection, cursor = connect_to_db()
@@ -54,7 +71,14 @@ def save_user_info(user_login, form):
                 (id_login, full_name, date_of_birth, phone_number, cpf, position_in_company)
             VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (user_login[1], full_name[1], date_of_birth[1], phone_number[1], cpf[1], position)
+            (
+                user_login[1],
+                values["full_name_val"],
+                values["date_val"],
+                values["telephone_val"],
+                values["cpf_val"],
+                values["position_val"]
+            )
         )
         connection.commit()
     finally:

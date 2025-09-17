@@ -27,6 +27,7 @@ def home_page():
         result = save_user_info(user_login, request.form)
 
         if not result["success"]:
+            context.update(result["context_update"])
             context[result["error_field"]] = result["message"]
             context["no_user_info"] = True
         else:
