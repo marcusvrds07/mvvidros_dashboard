@@ -26,7 +26,7 @@ def create_user(email):
     except smtplib.SMTPRecipientsRefused:
         return {"success": False, "field": "email_error", "error": "Destinatário inválido!"}
     except smtplib.SMTPException:
-        return {"success": False, "error": "Erro ao enviar e-mail!"}
+        return {"success": False,"field": "email_error", "error": "Erro ao enviar e-mail!"}
 
 def save_user_info(user_login, form):
     values = {
