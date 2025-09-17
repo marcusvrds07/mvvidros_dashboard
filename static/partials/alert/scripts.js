@@ -14,13 +14,18 @@ function showAlert(message, type) {
 
     isAlertVisible = true;
     startTime = Date.now();
-    const alertDiv = document.getElementById(type + 'Alert');
-    const errorMessage = document.getElementById(type === 'error' ? 'errorMessage' : 'successMessage');
-    
-    errorMessage.innerText = message;
-    alertDiv.style.display = "block";
 
-    const progressBar = document.getElementById(type === 'error' ? 'errorProgressBar' : 'successProgressBar');
+    const alertDiv = document.getElementById(type + 'Alert');
+    const messageSpan = document.getElementById(type + 'Message');
+    const progressBar = document.getElementById(type + 'ProgressBar');
+
+    if (!alertDiv || !messageSpan || !progressBar) {
+        console.error("IDs não encontrados para o tipo:", type);
+        return;
+    }
+
+    messageSpan.innerText = message;
+    alertDiv.style.display = "block";
 
     larguraAtual = calcularLargura();
 
@@ -46,10 +51,13 @@ function showAlert(message, type) {
 
 function closeAlert(alertId) {
     const alertDiv = document.getElementById(alertId);
+    if (!alertDiv) return;
+
     alertDiv.style.display = "none";
-    
-    const progressBar = document.getElementById(alertId === 'errorAlert' ? 'errorProgressBar' : 'successProgressBar');
-    progressBar.style.width = "0"; 
+
+    const type = alertId.replace("Alert", "");
+    const progressBar = document.getElementById(type + 'ProgressBar');
+    if (progressBar) progressBar.style.width = "0";
 
     if (progressBarInterval) {
         clearInterval(progressBarInterval);

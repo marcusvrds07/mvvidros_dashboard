@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, request, session, flash
+from flask import Blueprint, render_template, request, session, flash, redirect, url_for, get_flashed_messages
 from modules.database.manager import connect_to_db, finish_connection
 from modules.core.context import dashboard_context_base
 from modules.core.validations import check_date
 import secrets, bcrypt, string, sqlite3, smtplib
 from modules.services.dashboard_service import create_user, save_user_info
+from modules.core.auth_decorators import login_required
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
@@ -19,6 +20,7 @@ def generate_password(size=10):
 # HOME PAGE
 # -----------------------------------------
 @dashboard_bp.route("/", methods=["GET", "POST"])
+@login_required
 def home_page():
     context = dashboard_context_base("Dashboard")
 
@@ -45,6 +47,7 @@ def home_page():
 # VENDAS
 # -----------------------------------------
 @dashboard_bp.route("/vendas", methods=["GET", "POST"])
+@login_required
 def dashboard_sales():
     context = dashboard_context_base("Suas Vendas")
     return render_template("dashboard/sales.html", context=context)
@@ -54,6 +57,7 @@ def dashboard_sales():
 # ESTOQUE
 # -----------------------------------------
 @dashboard_bp.route("/estoque", methods=["GET", "POST"])
+@login_required
 def dashboard_stock():
     context = dashboard_context_base("Estoque")
     return render_template("dashboard/stock.html", context=context)
@@ -63,13 +67,15 @@ def dashboard_stock():
 # USERS
 # -----------------------------------------
 @dashboard_bp.route("/usuarios", methods=["GET", "POST"])
+@login_required
 def dashboard_users():
     context = dashboard_context_base("Gerencie Usuários")
 
     if request.method == "POST":
         result = create_user(request.form.get("email", ""))
         if not result["success"]:
-            context["email_error"] = result["error"]
+            flash({'field': result.get("field", "general_error"), "message": result["error"]}, "form_error")
+        return redirect(url_for('dashboard.dashboard_users'))
 
     # listar usuários
     connection, cursor = connect_to_db()
@@ -88,4 +94,9 @@ def dashboard_users():
     context["users_info"] = users_info
     finish_connection(connection, cursor)
 
+    for category, msg in get_flashed_messages(with_categories=True):
+        if category == "form_error" and isinstance(msg, dict):
+            context[msg["field"]] = msg["message"]
+
     return render_template("dashboard/users.html", context=context)
+

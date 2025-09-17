@@ -19,12 +19,12 @@ def create_user(email):
     try:
         insert_password_at_database(email, password, True)
         send_email(email, "Cadastro Realizado", temporary_password)
-        return {"success": True, "message": "Usuário criado com sucesso"}
+        return {"success": True}
     except sqlite3.IntegrityError as e:
         if "UNIQUE constraint failed" in str(e):
-            return {"success": False, "error": "O email já existe em nosso banco de dados!"}
+            return {"success": False, "field": "email_error", "error": "O email já existe em nosso banco de dados!"}
     except smtplib.SMTPRecipientsRefused:
-        return {"success": False, "error": "Destinatário inválido!"}
+        return {"success": False, "field": "email_error", "error": "Destinatário inválido!"}
     except smtplib.SMTPException:
         return {"success": False, "error": "Erro ao enviar e-mail!"}
 

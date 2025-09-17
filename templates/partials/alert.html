@@ -1,17 +1,19 @@
-    <script src="{{ url_for('static', filename='partials/alert/scripts.js') }}"></script>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, msg in messages %}
-                    <div id="{{category}}Alert" class="alert {{category}}-alert">
-                        <span class="closebtn" onclick="closeAlert('{{category}}Alert')">&times;</span>
-                        <span id="{{category}}Message">{{ message }}</span>
-                        <div class="progress-container">
-                            <div id="{{category}}ProgressBar" class="progress-bar"></div>
-                        </div>
+<script src="{{ url_for('static', filename='partials/alert/scripts.js') }}"></script>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, msg in messages %}
+            {% if category != "form_error" %}
+                <div id="{{category}}Alert" class="alert {{category}}-alert">
+                    <span class="closebtn" onclick="closeAlert('{{category}}Alert')">&times;</span>
+                    <span id="{{category}}Message">{{ msg }}</span>
+                    <div class="progress-container">
+                        <div id="{{category}}ProgressBar" class="progress-bar"></div>
                     </div>
-                    <script>
-                        setTimeout(() => showAlert("{{ msg }}", "{{ category }}"), 1000);
-                    </script>
-                {% endfor %}
+                </div>
+                <script>
+                    setTimeout(() => showAlert("{{ msg }}", "{{ category }}"), 1000);
+                </script>
             {% endif %}
-        {% endwith %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
