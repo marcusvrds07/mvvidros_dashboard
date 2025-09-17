@@ -72,9 +72,11 @@ def dashboard_users():
     context = dashboard_context_base("Gerencie Usuários")
 
     if request.method == "POST":
-        result = create_user(request.form.get("email", ""))
+        result = create_user(request.form)
         if not result["success"]:
-            flash({'field': result.get("field", "general_error"), "message": result["error"]}, "form_error")
+            flash({"field": result["field"], "message": result["message"], "context_update": result.get("context_update", {})}, "form_error")
+        else:
+            flash(result["message"], "success")
         return redirect(url_for('dashboard.dashboard_users'))
 
     # listar usuários
@@ -97,6 +99,10 @@ def dashboard_users():
     for category, msg in get_flashed_messages(with_categories=True):
         if category == "form_error" and isinstance(msg, dict):
             context[msg["field"]] = msg["message"]
+            context.update(msg.get("context_update", {}))
+        elif category == "success":
+            context["success_message"] = msg
 
+    print(">>> CONTEXT FINAL:", context)
     return render_template("dashboard/users.html", context=context)
 
