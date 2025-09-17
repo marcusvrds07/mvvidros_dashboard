@@ -193,7 +193,6 @@
   background: none;
   cursor: pointer;
   font-size: 16px;
-  margin-right: 6px;
   transition: transform 0.2s ease, background 0.2s ease;
   padding: 6px;
   border-radius: 6px;
@@ -215,4 +214,102 @@
 .error-messages p {
   color: red;
   font-size: 14px;
+}
+
+/* ===== Overlay base ===== */
+.modal-overlay.modal-delete {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 1000;
+}
+
+.modal-overlay.modal-delete.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ===== Estrutura do modal ===== */
+.modal-delete .modal {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 95%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transform: translateY(-50px);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.modal-overlay.modal-delete.active .modal {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ===== Título ===== */
+.modal-delete h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e63946; /* vermelho para destaque */
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* ===== Texto ===== */
+.modal-delete .modal-info {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 20px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* ===== Ações ===== */
+.modal-delete .modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Botão cancelar */
+.modal-delete .btn-cancel {
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  color: #333;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.modal-delete .btn-cancel:hover {
+  background-color: #ddd;
+}
+
+/* Botão remover */
+.modal-delete .btn-submit.danger {
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #e63946;
+  color: #fff;
+  font-weight: 700;
+  transition: background 0.3s ease;
+}
+
+.modal-delete .btn-submit.danger:hover {
+  background: #c82333;
 }

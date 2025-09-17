@@ -107,5 +107,9 @@ def check_date(date_of_input, format=False):
 
         if informed_date > current_date:
             return False, 'A data informada está no futuro.'
+        if informed_date < datetime(1910, 1, 1):
+            return False, 'A data informada é muito antiga'
+        if int((current_date - informed_date).days / 365.25) < 18:
+            return False, 'O usuário precisa ser maior de idade'
         
     return True, date_of_input if not format else format_date

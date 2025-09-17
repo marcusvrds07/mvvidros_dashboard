@@ -37,8 +37,14 @@ def create_user(form):
 
     except sqlite3.IntegrityError as e:
         connection.rollback()
-        if "UNIQUE constraint failed" in str(e):
-            return {"success": False, "field": "email_error", "message": "O email já existe em nosso banco de dados!"}
+        error_msg = str(e)
+        if "UNIQUE constraint failed" in error_msg:
+            if "users_login.login" in error_msg:
+                return {"success": False, "field": "email_error", "message": "O email já existe em nosso banco de dados!"}
+            elif "users_info.cpf" in error_msg:
+                return {"success": False, "field": "cpf_error", "message": "O CPF já existe em nosso banco de dados!"}
+            else:
+                return {"success": False, "field": "general_error", "message": "Erro de integridade no banco de dados"}
         return {"success": False, "field": "general_error", "message": "Erro no banco de dados"}
     except smtplib.SMTPException:
         connection.rollback()
@@ -60,13 +66,18 @@ def save_user_info(user_login, form, connection=None, cursor=None):
         "position_val": form.get("position", "").strip()
     }
 
-    if not check_name(values["full_name_val"])[0]:
-        return {"success": False, "field": "name_error", "message": "O nome informado inválido", "context_update": values}
-    if not check_date(values["date_val"])[0]:
-        return {"success": False, "field": "date_error", "message": "A data de nascimento é inválida", "context_update": values}
-    if not check_cpf(values["cpf_val"])[0]:
-        return {"success": False, "field": "cpf_error", "message": "O CPF informado é inválido", "context_update": values}
-    if not check_phone_number(values["telephone_val"])[0]:
+    name_check = check_name(values["full_name_val"])
+    date_check = check_date(values["date_val"])
+    cpf_check = check_cpf(values["cpf_val"])
+    phone_check = check_phone_number(values["telephone_val"])
+
+    if not name_check[0]:
+        return {"success": False, "field": "name_error", "message": name_check[1], "context_update": values}
+    if not date_check[0]:
+        return {"success": False, "field": "date_error", "message": date_check[1], "context_update": values}
+    if not cpf_check[0]:
+        return {"success": False, "field": "cpf_error", "message": cpf_check[1], "context_update": values}
+    if not phone_check[0]:
         return {"success": False, "field": "phone_error", "message": "O telefone informado é inválido", "context_update": values}
 
     try:

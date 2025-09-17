@@ -30,7 +30,7 @@ def home_page():
 
         if not result["success"]:
             context.update(result["context_update"])
-            context[result["error_field"]] = result["message"]
+            context[result["field"]] = result["message"]
             context["no_user_info"] = True
         else:
             session.pop("no_user_info", None)
@@ -82,12 +82,12 @@ def dashboard_users():
     # listar usuários
     connection, cursor = connect_to_db()
     cursor.execute("""
-        SELECT ui.full_name, ui.cpf, ui.phone_number, ul.login, 
+        SELECT ul.id, ui.full_name, ui.cpf, ui.phone_number, ul.login, 
                ui.date_of_birth, ui.position_in_company
         FROM users_login as ul
         JOIN users_info as ui ON ui.id_login = ul.id
     """)
-    keys = ["name", "cpf", "phone", "email", "birth_date", "position"]
+    keys = ["id","name", "cpf", "phone", "email", "birth_date", "position"]
     users_info = [dict(zip(keys, u)) for u in cursor.fetchall()]
 
     for user in users_info:
@@ -102,7 +102,10 @@ def dashboard_users():
             context.update(msg.get("context_update", {}))
         elif category == "success":
             context["success_message"] = msg
-
-    print(">>> CONTEXT FINAL:", context)
     return render_template("dashboard/users.html", context=context)
+
+@dashboard_bp.route("/usuarios/excluir/<int:user_id>")
+@login_required
+def delete_user(user_id):
+    return f"Usuário com ID {user_id}"
 

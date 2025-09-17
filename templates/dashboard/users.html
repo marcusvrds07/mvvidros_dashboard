@@ -5,6 +5,23 @@
 {% endblock extracss %}
 
 {% block content %}
+
+<div class="modal-overlay modal-delete" id="deleteUserModal">
+  <div class="modal">
+    <h2>Remover Usuário</h2>
+    <p class="modal-info">
+      Tem certeza que deseja remover este usuário? Esta ação não poderá ser desfeita.
+    </p>
+    <form>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel">Cancelar</button>
+        <button type="submit" class="btn-submit danger">Remover</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 <div class="user-page">
     <h2 class="page-title">Gerenciar Usuários</h2>
 
@@ -116,8 +133,8 @@
                             <td>{{user.birth_date}}</td>
                             <td>{{user.position}}</td>
                             <td>
-                                <button class="btn-icon edit"><i class="fas fa-edit"></i></button>
-                                <button class="btn-icon delete"><i class="fas fa-trash-alt"></i></button>
+                                <a class="btn-icon edit" href='#'><i class="fas fa-edit"></i></a>
+                                <a class="btn-icon delete" href="{{ url_for('dashboard.delete_user', user_id=user.id)}}"><i class="fas fa-trash-alt"></i></a>
                             </td>
                     </tr>
                     {% endfor %}
@@ -141,6 +158,16 @@ document.addEventListener("DOMContentLoaded", function () {
     for (const [selector, message] of Object.entries(errors)) {
         showErrorMessage(message, selector);
     }
+
+    const deleteUser = document.querySelector('.btn-icon.delete')
+    console.log(deleteUser)
+    deleteUser.addEventListener('click', (e) => {
+        e.preventDefault()
+
+        const resposta = prompt('Digite')
+        console.log(resposta)
+    })
+
 });
 </script>
 
